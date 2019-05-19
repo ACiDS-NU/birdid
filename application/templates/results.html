@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Plover - A Bird IDing web app</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="static/css/main.css" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/template.css') }}">		
+		<style type="text/css">
+			#candidates p {
+		  		overflow: hidden;
+		  		display: -webkit-box;
+		  		-webkit-line-clamp: 3;
+		  		-webkit-box-orient: vertical;
+		  		margin: 0.0em 0em 0.0em 0em;
+			}
+			#candidates h4 {
+				margin: 0.0em 0em 1em 0em;
+			}
+			#candidates a {
+				margin-top: 0.5em;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<h1><strong><a href="{{ url_for('index') }}">Plover</a></strong></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="{{ url_for('index') }}">Home</a></li>
+						<li><a href="{{ url_for('about') }}">About</a></li>
+						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+
+		<!-- Main -->
+			<section id="main" class="wrapper style2 special" style="padding: 4em 0em 3em 0em;">
+				<div class="container">
+					<div class="row 150%">
+						<div class="6u 12u$(xsmall)">
+								<h2>Your upload</h2>
+								<img id="image" src="{{ url_for('uploaded_file', filename=filename) }}" style="max-width:70%; max-height: 400px;" />
+						
+						</div>
+						<div class="6u 12u$(small)">
+							<h2>Our predictions</h2>
+							<p>{{Bird1.bird|replace("_"," ")}} ({{p1}} %)</p>
+							<p>{{b2|replace("_"," ")}} ({{p2}} %)</p>
+							<p>{{b3|replace("_"," ")}} ({{p3}} %)</p>
+							<a href="{{ url_for('index')}}">Go back and try another photo!</a>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section id="candidates" class="wrapper style2 special" style="padding: 2em 0em 1em 0em;">
+				<div class="container">
+					<div class="row 150%" id="bird1" style="padding: 2em 0em 1em 0em;">
+						<div class="6u 12u$(xsmall)" style="text-align: right;">
+							<h4>{{b1|replace("_"," ")}}</h4>
+							{{BD1}}	
+							<a href="https://www.allaboutbirds.org/guide/{{b1}}" target="_blank">Read more at All About Birds</a>
+						</div>
+						<div class="6u 12u$(small)" style="padding: 0em 0em 1em 2.25em;">
+							<img id="Bird1img" src="{{ BI1 }}" style="max-width: 250px; max-height: 250px;" align="middle" />
+						</div>
+					</div>
+					<div class="row 150%" id="bird2" style="padding: 2em 0em 1em 0em;">
+						<div class="6u 12u$(xsmall)" style="text-align: right;">
+							<h4>{{b2|replace("_"," ")}}</h4>
+							{{BD2}}	
+							<a href="https://www.allaboutbirds.org/guide/{{b2}}" target="_blank">Read more at All About Birds</a>
+						</div>
+						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
+							<img id="Bird2img" src="{{ BI2 }}" style="max-width: 250px; max-height: 250px;" align="middle"  />
+						</div>
+					</div>
+					<div class="row 150%" id="bird3" style="padding: 2em 0em 1em 0em;">
+						<div class="6u 12u$(xsmall)" style="text-align: right;">
+							<h4>{{b3|replace("_"," ")}}</h4>
+							{{BD3}}	
+							<a href="https://www.allaboutbirds.org/guide/{{b3}}" target="_blank">Read more at All About Birds</a>
+						</div>
+						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
+							<img id="Bird3img" src="{{ BI3 }}" style="max-width: 250px; max-height: 250px;" align="middle"  />
+						</div>
+					</div>
+					<div align="center" style="margin-top: 1em;">
+						<a href="{{ url_for('index')}}">Go back and try another photo!</a>
+					</div>
+				</div>
+			</section>
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="icons">
+						<li><a href="#" class="icon fa-facebook"></a></li>
+						<li><a href="#" class="icon fa-twitter"></a></li>
+						<li><a href="#" class="icon fa-instagram"></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; The Piping Plover</li>
+						<li>Design: <a href="http://templated.co">TEMPLATED</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+<!-- 			<script type="text/javascript">
+				//You can then call the function with something like what i have below.
+				document.querySelector('p').innerText = truncateText('p', 107);
+			</script> -->
+			<script src="static/js/jquery.min.js"></script>
+			<script src="static/js/skel.min.js"></script>
+			<script src="static/js/util.js"></script>
+			<script src="static/js/main.js"></script>
+
+
+	</body>
+</html>
