@@ -40,16 +40,25 @@
 					<h3>How it started</h3>
 					<p>I always wanted to shoot wildlife photos. However, it wasn't until I bought my Sigma 150-600mm tele lens for a trip to Yellowstone NP that I started seeing all the birds. It is amazing how many bird species are around us, yet for a new birder I couldn't recognize them. Although I was using Merlin (an incredibly helpful app) when in doubt, I decided to make an app just to learn more about these beautiful birds.</p>
 					<h3>How it works</h3>
-					<p>The underlying model of this app is a convolutional neural network. It is particularly suitable for analyzing images due to its way of perceiving data. I took a pre-trained model called MobileNetV2, which is capable of identifying 1000 categories of items, as the feature extractor, and trained it on the NAbirds Dataset (36k train images of 404 species) for 10 epochs. Then I fine-tuned it for another 20 epochs. All trainings were done using Tensorflow 2.0 on Google Colab with GPU backend.</p>
+					<p>The underlying model of this app is a convolutional neural network. It is particularly suitable for analyzing images due to its way of perceiving data. I took a pre-trained model called MobileNetV2, which is capable of identifying 1000 categories of items, as the feature extractor, and trained it on the NAbirds Dataset (36k train images of 404 species) for 10 epochs. Then I fine-tuned it for another 20 epochs. All trainings were done using Tensorflow 2.0 on Google Colab with GPU backend. For the code, see the <a href="https://github.com/darrenjhsu/birdid" target="_blank">GitHub page</a> for this project.</p>
 					<h3>The NAbirds Dataset</h3>
-					<p><a href="http://dl.allaboutbirds.org/nabirds" target="_blank">This dataset</a> is collected and published by the Cornell Lab of Ornithology, containing ~48k images of 404 species in 555 visual categories. I split them to 36k/6k/6k train/validation/test images randomly, after grouping the visual categories into species. Using the bounding box information provided, I cropped and padded black sides to the images.</p>
+					<p><a href="http://dl.allaboutbirds.org/nabirds" target="_blank">This dataset</a> is collected and published by the Cornell Lab of Ornithology, containing ~48k images of 404 species in 555 visual categories. I split them to 36k/6k/6k train/validation/test images randomly, after grouping the visual categories into species. Using the bounding box information provided, I cropped and padded black sides to the images. </p>
 					<h3>This website</h3>
-					<p>This website uses Flask and is hosted on Amazon Elastic Beanstalk. The template is based on <a href="https://templated.co/spatial" target="_blank">Spatial</a>. The background photo you saw when you entered this site is an endangered Piping Plover. That's why this site is called Plover.</p>
+					<p>This website uses Flask and is hosted on Amazon Elastic Beanstalk. The template is based on <a href="https://templated.co/spatial" target="_blank">Spatial</a>. The background photo you saw when you entered this site is an endangered Piping Plover. That's why this site is called Plover. The bird description is scraped from Wikipedia with BeautifulSoup and with some manual effort. The idea to create this website is inspired by <a href="http://www.lazybirder.com/" target="_blank">Lazybirder</a>. </p>
 					<h3>Thanks to ...</h3>
 					<p>Academic Career in Data Science (<a href="https://sites.northwestern.edu/acids/" target="_blank">ACiDS</a>) at Northwestern University, where this idea spawned to a real project,	Kit (@<a href="https://wingkitlee0.github.io/" target="_blank">wingkitlee0</a>) for initiating this project, and Jordan (@<a href="https://github.com/monadnoc" target="_blank">monadnoc</a>), Matt (@<a href="https://github.com/kirschner21" target="_blank">kirschner21</a>), and Denis (@<a href="https://github.com/dleshchev" target="_blank">dleshchev</a>) for organizing the ACiDS + great coffee! </p>
 					</p>
+					<h3>Features coming soon</h3>
+					<p>
+					1. Currently the website does not allow mobile users to crop the photo (but whole-photo uploading is OK). It'll be enabled in the future once I figure out how to do so.<br/>
+					2. The result page shows only one photo per candidate. It will be changed to a carousel for a better comparison.<br/>
+					3. Users will be able to report whether the prediction is correct and provide ground truth.<br/>
+					4. Results will be filtered with GBIF EOD (Ebird observation dataset) so birds like Western/Eastern Meadowlark can be separated.<br/>
+					5. FeederWatch Auto! - Ever wondered what birds visited your feeder when you're not looking? Hmm ...<br/>
+					6. Expansion of dataset to East Asian birds.
+					</p>
 					<h4>Who I am</h4>
-					<p>My name is Darren Hsu (@<a href="https://github.com/darrenjhsu" target="_blank">darrenjhsu</a>, <a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" target="_blank">LinkedIn</a>). I am a Ph.D. student at Northwestern University studying Chemistry. Yep, not ornithology. But as my research depends heavily on data analysis, I became interested in data science. </p>
+					<p>My name is Darren Hsu (@<a href="https://github.com/darrenjhsu" target="_blank">darrenjhsu</a>, <a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" target="_blank">LinkedIn</a>). I am a Ph.D. student at Northwestern University studying Chemistry. Yep, not ornithology. But as my research depends heavily on data analysis, I became interested in data science. Also an amateur photographer and birder.</p>
 
 				</div>
 			</section>
@@ -58,13 +67,14 @@
 			<footer id="footer">
 				<div class="container">
 					<ul class="icons">
-						<li><a href="#" class="icon fa-facebook"></a></li>
-						<li><a href="#" class="icon fa-twitter"></a></li>
-						<li><a href="#" class="icon fa-instagram"></a></li>
+						<li><a href="https://github.com/darrenjhsu/birdid" class="icon fa-github" target="_blank"></a></li>
+						<li><a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" class="icon fa-linkedin" target="_blank"></a></li>
+						<li><a href="https://www.flickr.com/photos/darren8221/" class="icon fa-flickr" target="_blank"></a></li>
 					</ul>
 					<ul class="copyright">
 						<li>&copy; The Piping Plover</li>
 						<li>Design: <a href="http://templated.co">TEMPLATED</a></li>
+						<li>Contact: contact@plover-birdid.com</li>
 					</ul>
 				</div>
 			</footer>
