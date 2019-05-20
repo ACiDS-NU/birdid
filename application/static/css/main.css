@@ -1652,6 +1652,7 @@
 	a {
 		text-decoration: underline;
 		color: #f32853;
+		/*color: #5B3B8C*/
 	}
 
 		a:hover {
@@ -1944,6 +1945,7 @@
 		button.special,
 		.button.special {
 			background-color: #f32853;
+			/*background-color: #5B3B8C;*/
 			color: #ffffff !important;
 		}
 
@@ -3271,3 +3273,15 @@
 		}
 
 
+		figure {
+			display: inline-block;
+			/*border: 1px dotted gray;*/
+			/*margin: 20px;  adjust as needed */
+		}
+		figure img {
+			vertical-align: top;
+		}
+		figure figcaption {
+			/*border: 1px dotted blue;*/
+			text-align: right;
+		}

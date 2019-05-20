@@ -154,19 +154,26 @@ def index():
 			# BI1 = 'static/bird_img/' + str(bird_img.loc[bird_img['class_name_sp'].isin([b1])].sample(n=1)['image_name_fname_only'].values[0])
 			# BI2 = 'static/bird_img/' + str(bird_img.loc[bird_img['class_name_sp'].isin([b2])].sample(n=1)['image_name_fname_only'].values[0])
 			# BI3 = 'static/bird_img/' + str(bird_img.loc[bird_img['class_name_sp'].isin([b3])].sample(n=1)['image_name_fname_only'].values[0])
-			BI1 = img_root + str(bird_img.loc[bird_img['class_name_sp'].isin([b1])].sample(n=1)['image_name_fname_only'].values[0])
-			BI2 = img_root + str(bird_img.loc[bird_img['class_name_sp'].isin([b2])].sample(n=1)['image_name_fname_only'].values[0])
-			BI3 = img_root + str(bird_img.loc[bird_img['class_name_sp'].isin([b3])].sample(n=1)['image_name_fname_only'].values[0])
-			Bird1 = {'bird': b1, 'description': BD1, 'image': BI1}
-			Bird2 = {'bird': b2, 'description': BD2, 'image': BI2}
-			Bird3 = {'bird': b3, 'description': BD3, 'image': BI3}
+			BI1 = bird_img.loc[bird_img['class_name_sp'].isin([b1])].sample(n=1)
+			BI2 = bird_img.loc[bird_img['class_name_sp'].isin([b2])].sample(n=1)
+			BI3 = bird_img.loc[bird_img['class_name_sp'].isin([b3])].sample(n=1)
+			BIF1 = img_root + str(BI1['image_name_fname_only'].values[0])
+			BIF2 = img_root + str(BI2['image_name_fname_only'].values[0])
+			BIF3 = img_root + str(BI3['image_name_fname_only'].values[0])
+			PH1 = str(BI1['photographer'].values[0])
+			PH2 = str(BI2['photographer'].values[0])
+			PH3 = str(BI3['photographer'].values[0])
+			BL1 = 'https://en.wikipedia.org/wiki/' + Bird_link[b1]
+			BL2 = 'https://en.wikipedia.org/wiki/' + Bird_link[b2]
+			BL3 = 'https://en.wikipedia.org/wiki/' + Bird_link[b3]
+			Bird1 = {'bird': b1, 'prob': p1, 'description': BD1, 'image': BIF1, 'bird_link': BL1, 'photographer': PH1}
+			Bird2 = {'bird': b2, 'prob': p2, 'description': BD2, 'image': BIF2, 'bird_link': BL2, 'photographer': PH2}
+			Bird3 = {'bird': b3, 'prob': p3, 'description': BD3, 'image': BIF3, 'bird_link': BL3, 'photographer': PH3}
 			# print(os.path.join(application.config['UPLOAD_FOLDER'], filename))
 			cv2.imwrite(os.path.join(application.config['UPLOAD_FOLDER'], filename), paint_to_square(img_r, desired_size=500, pad=False))
 			# file.save(os.path.join(application.config['UPLOAD_FOLDER'], filename))
 			# return render_template("home.html")#redirect(url_for('uploaded_file', filename=filename))
-			return render_template("results.html", filename=filename, 
-				b1=b1, b2=b2, b3=b3, p1=p1, p2=p2, p3=p3, BD1=BD1, BD2=BD2, BD3=BD3, BI1=BI1, BI2=BI2, BI3=BI3,
-				Bird1=Bird1, Bird2=Bird2, Bird3=Bird3)
+			return render_template("results.html", filename=filename, Bird1=Bird1, Bird2=Bird2, Bird3=Bird3)
 	# return render_template("home.html")
 	return render_template("index.html")
 
@@ -184,9 +191,12 @@ pkl_file.close()
 pkl_file = open('static/class_indices_inv_map.pkl', 'rb')
 class_indices_inv_map = pickle.load(pkl_file)
 pkl_file.close()
-f = open('static/Bird_description.pkl', 'rb')
-Bird_description = pickle.load(f)
-f.close()
+pkl_file = open('static/Bird_description_wikipedia.pkl', 'rb')
+Bird_description = pickle.load(pkl_file)
+pkl_file.close()
+pkl_file = open('static/Bird_link.pkl', 'rb')
+Bird_link = pickle.load(pkl_file)
+pkl_file.close()
 bird_img = pd.read_csv('static/bird_img.csv')
 # Bird_description = dict(zip(Bird_description2a,Bird_description2b))
 # print(type(Bird_description2))

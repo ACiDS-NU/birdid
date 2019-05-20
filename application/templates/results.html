@@ -15,7 +15,7 @@
 			#candidates p {
 		  		overflow: hidden;
 		  		display: -webkit-box;
-		  		-webkit-line-clamp: 3;
+		  		-webkit-line-clamp: 4;
 		  		-webkit-box-orient: vertical;
 		  		margin: 0.0em 0em 0.0em 0em;
 			}
@@ -51,13 +51,14 @@
 						<div class="6u 12u$(xsmall)">
 								<h2>Your upload</h2>
 								<img id="image" src="{{ url_for('uploaded_file', filename=filename) }}" style="max-width:70%; max-height: 400px;" />
+
 						
 						</div>
 						<div class="6u 12u$(small)">
 							<h2>Our predictions</h2>
-							<p>{{Bird1.bird|replace("_"," ")}} ({{p1}} %)</p>
-							<p>{{b2|replace("_"," ")}} ({{p2}} %)</p>
-							<p>{{b3|replace("_"," ")}} ({{p3}} %)</p>
+							<p>{{Bird1.bird|replace("_"," ")}} ({{Bird1.prob}} %)</p>
+							<p>{{Bird2.bird|replace("_"," ")}} ({{Bird2.prob}} %)</p>
+							<p>{{Bird3.bird|replace("_"," ")}} ({{Bird3.prob}} %)</p>
 							<a href="{{ url_for('index')}}">Go back and try another photo!</a>
 						</div>
 					</div>
@@ -67,32 +68,45 @@
 				<div class="container">
 					<div class="row 150%" id="bird1" style="padding: 2em 0em 1em 0em;">
 						<div class="6u 12u$(xsmall)" style="text-align: right;">
-							<h4>{{b1|replace("_"," ")}}</h4>
-							{{BD1}}	
-							<a href="https://www.allaboutbirds.org/guide/{{b1}}" target="_blank">Read more at All About Birds</a>
+							<h4>{{Bird1.bird|replace("_"," ")}}</h4>
+							{{Bird1.description}}
+							<a href={{Bird1.bird_link}} target="_blank">Full text at Wikipedia</a> | 
+							<a href="https://www.allaboutbirds.org/guide/{{Bird1.bird}}" target="_blank">Read more at All About Birds</a>
 						</div>
 						<div class="6u 12u$(small)" style="padding: 0em 0em 1em 2.25em;">
-							<img id="Bird1img" src="{{ BI1 }}" style="max-width: 250px; max-height: 250px;" align="middle" />
+							<figure style="max-width: 60%;">
+								<img id="Bird1img" src="{{ Bird1.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
+								<figcaption><em>&copy; {{Bird1.photographer}}</em></figcaption>
+							</figure>
+
 						</div>
 					</div>
 					<div class="row 150%" id="bird2" style="padding: 2em 0em 1em 0em;">
 						<div class="6u 12u$(xsmall)" style="text-align: right;">
-							<h4>{{b2|replace("_"," ")}}</h4>
-							{{BD2}}	
-							<a href="https://www.allaboutbirds.org/guide/{{b2}}" target="_blank">Read more at All About Birds</a>
+							<h4>{{Bird2.bird|replace("_"," ")}}</h4>
+							{{Bird2.description}}
+							<a href={{Bird2.bird_link}} target="_blank">Full text at Wikipedia</a> | 
+							<a href="https://www.allaboutbirds.org/guide/{{Bird2.bird}}" target="_blank">Read more at All About Birds</a>
 						</div>
 						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
-							<img id="Bird2img" src="{{ BI2 }}" style="max-width: 250px; max-height: 250px;" align="middle"  />
+							<figure style="max-width: 60%;">
+								<img id="Bird2img" src="{{ Bird2.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
+								<figcaption><em>&copy; {{Bird2.photographer}}</em></figcaption>
+							</figure>
 						</div>
 					</div>
 					<div class="row 150%" id="bird3" style="padding: 2em 0em 1em 0em;">
 						<div class="6u 12u$(xsmall)" style="text-align: right;">
-							<h4>{{b3|replace("_"," ")}}</h4>
-							{{BD3}}	
-							<a href="https://www.allaboutbirds.org/guide/{{b3}}" target="_blank">Read more at All About Birds</a>
+							<h4>{{Bird3.bird|replace("_"," ")}}</h4>
+							{{Bird3.description}}
+							<a href={{Bird3.bird_link}} target="_blank">Full text at Wikipedia</a> | 
+							<a href="https://www.allaboutbirds.org/guide/{{Bird3.bird}}" target="_blank">Read more at All About Birds</a>
 						</div>
 						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
-							<img id="Bird3img" src="{{ BI3 }}" style="max-width: 250px; max-height: 250px;" align="middle"  />
+							<figure style="max-width: 60%;">
+								<img id="Bird3img" src="{{ Bird3.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
+								<figcaption><em>&copy; {{Bird3.photographer}}</em></figcaption>
+							</figure>
 						</div>
 					</div>
 					<div align="center" style="margin-top: 1em;">
