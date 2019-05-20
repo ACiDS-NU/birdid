@@ -73,10 +73,10 @@
 							<a href={{Bird1.bird_link}} target="_blank">Full text at Wikipedia</a> | 
 							<a href="https://www.allaboutbirds.org/guide/{{Bird1.bird}}" target="_blank">Read more at All About Birds</a>
 						</div>
-						<div class="6u 12u$(small)" style="padding: 0em 0em 1em 2.25em;">
+						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
 							<figure style="max-width: 60%;">
 								<img id="Bird1img" src="{{ Bird1.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
-								<figcaption><em>&copy; {{Bird1.photographer}}</em></figcaption>
+								<figcaption><em>&copy; {{Bird1.photographer|replace("_"," ")}}</em></figcaption>
 							</figure>
 
 						</div>
@@ -91,7 +91,7 @@
 						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
 							<figure style="max-width: 60%;">
 								<img id="Bird2img" src="{{ Bird2.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
-								<figcaption><em>&copy; {{Bird2.photographer}}</em></figcaption>
+								<figcaption><em>&copy; {{Bird2.photographer|replace("_"," ")}}</em></figcaption>
 							</figure>
 						</div>
 					</div>
@@ -105,7 +105,7 @@
 						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
 							<figure style="max-width: 60%;">
 								<img id="Bird3img" src="{{ Bird3.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
-								<figcaption><em>&copy; {{Bird3.photographer}}</em></figcaption>
+								<figcaption><em>&copy; {{Bird3.photographer|replace("_"," ")}}</em></figcaption>
 							</figure>
 						</div>
 					</div>
