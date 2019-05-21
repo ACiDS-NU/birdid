@@ -126,8 +126,12 @@ def index():
 			actual_x2 = round(x2 / w * im_w)
 			actual_y1 = round(y1 / h * im_h)
 			actual_y2 = round(y2 / h * im_h)
-			actual_w = actual_x2 - actual_x1
-			actual_h = actual_y2 - actual_y1
+			if (actual_x2 - actual_x1) == 0 or (actual_y2 - actual_y1) == 0:
+				actual_x1 = 0
+				actual_x2 = im_w
+				actual_y1 = 0
+				actual_y2 = im_h
+
 			# if actual_h > actual_w:
 			# 	actual_y2 -= actual_h - actual_w
 			# if actual_w > actual_h:
