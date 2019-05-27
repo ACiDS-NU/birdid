@@ -25,6 +25,9 @@
 			#candidates a {
 				margin-top: 0.5em;
 			}
+			#predictions h4 {
+				margin: 2em 0em 0em 0em;
+			}
 
 		</style>
 	</head>
@@ -45,7 +48,7 @@
 			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
 
 		<!-- Main -->
-			<section id="main" class="wrapper style2 special" style="padding: 4em 0em 3em 0em;">
+			<section id="predictions" class="wrapper style2 special" style="padding: 4em 0em 3em 0em;">
 				<div class="container">
 					<div class="row 150%">
 						<div class="6u 12u$(xsmall)">
@@ -56,59 +59,60 @@
 						</div>
 						<div class="6u 12u$(small)">
 							<h2>Our predictions</h2>
-							<p>{{Bird1.bird|replace("_"," ")}} ({{Bird1.prob}} %)</p>
-							<p>{{Bird2.bird|replace("_"," ")}} ({{Bird2.prob}} %)</p>
-							<p>{{Bird3.bird|replace("_"," ")}} ({{Bird3.prob}} %)</p>
-							<a href="{{ url_for('index')}}">Go back and try another photo!</a>
+							{% if num_birds == 0 %}
+								<p>Sorry, there is no candidate birds at this location for this period of time</p>
+							{% endif %}
+							{% for Bird in Bird_candidates %}
+								<h4>{{Bird.bird|replace("_"," ")}}</h4>
+								Visual probability: {{Bird.prob}} % 
+									{% if messages.GeoSpatial_Filtering == 1 %}
+									| Geospatial occurance: {{Bird.occ}} / {{occ_tot}}
+									{% endif %}
+								<br/>
+							{% endfor %}
+							
+							
+							{% if messages.GeoSpatial_Filtering == 0 %}
+							<br/>Did not perform geospatial filtering because: 
+								{% if messages.lat_lon_default == 1 %}
+								Geolocation is not set. 
+								{% endif %}
+								{% if messages.obs_date_default == 1 %}
+								Date is not set.
+								{% endif %}
+							{% else %}
+								<br/>Performed geospatial filtering: <br/>
+								Observation date: {{messages.obs_date}} <br/>
+								Location: {{messages.location}} <br/>
+								Coordinates: ({{messages.lat}}, {{messages.lon}})
+							{% endif %}
+
+							<br/><br/><a href="{{ url_for('index')}}">Go back and try another photo!</a>
+
 						</div>
 					</div>
 				</div>
 			</section>
 			<section id="candidates" class="wrapper style2 special" style="padding: 2em 0em 1em 0em;">
 				<div class="container">
+					{% for Bird in Bird_candidates %}
 					<div class="row 150%" id="bird1" style="padding: 2em 0em 1em 0em;">
 						<div class="6u 12u$(xsmall)" style="text-align: right;">
-							<h4>{{Bird1.bird|replace("_"," ")}}</h4>
-							{{Bird1.description}}
-							<a href={{Bird1.bird_link}} target="_blank">Full text at Wikipedia</a> | 
-							<a href="https://www.allaboutbirds.org/guide/{{Bird1.bird}}" target="_blank">Read more at All About Birds</a>
+							<h4>{{Bird.bird|replace("_"," ")}}</h4>
+							{{Bird.description}}
+							<a href={{Bird.bird_link}} target="_blank">Full text at Wikipedia</a> | 
+							<a href="https://www.allaboutbirds.org/guide/{{Bird.bird}}" target="_blank">Read more at All About Birds</a>
 						</div>
 						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
 							<figure style="max-width: 60%;">
-								<img id="Bird1img" src="{{ Bird1.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
-								<figcaption><em>&copy; {{Bird1.photographer|replace("_"," ")}}</em></figcaption>
+								<img id="Bird{{ii}}_img" src="{{ Bird.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
+								<figcaption><em>&copy; {{Bird.photographer|replace("_"," ")}}</em></figcaption>
 							</figure>
 
 						</div>
 					</div>
-					<div class="row 150%" id="bird2" style="padding: 2em 0em 1em 0em;">
-						<div class="6u 12u$(xsmall)" style="text-align: right;">
-							<h4>{{Bird2.bird|replace("_"," ")}}</h4>
-							{{Bird2.description}}
-							<a href={{Bird2.bird_link}} target="_blank">Full text at Wikipedia</a> | 
-							<a href="https://www.allaboutbirds.org/guide/{{Bird2.bird}}" target="_blank">Read more at All About Birds</a>
-						</div>
-						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
-							<figure style="max-width: 60%;">
-								<img id="Bird2img" src="{{ Bird2.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
-								<figcaption><em>&copy; {{Bird2.photographer|replace("_"," ")}}</em></figcaption>
-							</figure>
-						</div>
-					</div>
-					<div class="row 150%" id="bird3" style="padding: 2em 0em 1em 0em;">
-						<div class="6u 12u$(xsmall)" style="text-align: right;">
-							<h4>{{Bird3.bird|replace("_"," ")}}</h4>
-							{{Bird3.description}}
-							<a href={{Bird3.bird_link}} target="_blank">Full text at Wikipedia</a> | 
-							<a href="https://www.allaboutbirds.org/guide/{{Bird3.bird}}" target="_blank">Read more at All About Birds</a>
-						</div>
-						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
-							<figure style="max-width: 60%;">
-								<img id="Bird3img" src="{{ Bird3.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
-								<figcaption><em>&copy; {{Bird3.photographer|replace("_"," ")}}</em></figcaption>
-							</figure>
-						</div>
-					</div>
+					{% endfor %}
+					
 					<div align="center" style="margin-top: 1em;">
 						<a href="{{ url_for('index')}}">Go back and try another photo!</a>
 					</div>

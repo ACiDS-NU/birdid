@@ -63,21 +63,35 @@
 							<h2>Upload your photo</h2>
 							<p>then drag to crop out the bird.</p>
 						</header>
-							<p>(Mobile users, let me know if the drag feature is OK or not, thanks!)</p>
-                        	<form method=post enctype=multipart/form-data>
-                                <input type="file" id="file" name="file" align="center" />
-                                <br/>
-                                <img id="bird_image" width="60%" align="center" style="margin-top: 0.5em" />
-                                <br/>
-                                <input type="hidden" name="x1" value="" />
-                                <input type="hidden" name="y1" value="" />
-                                <input type="hidden" name="x2" value="" />
-                                <input type="hidden" name="y2" value="" />
-                                <input type="hidden" name="w" value="" />
-                                <input type="hidden" name="h" value="" />
-                                <br/>
-                                <input class="button special big" type=submit value=Upload>
-                             </form>
+						<p>(Mobile users, let me know if the drag feature is OK or not, thanks!)</p>
+                    	<form method=post enctype=multipart/form-data>
+                    		
+							
+							<input type="file" id="file" name="file" align="center" />
+							<br/>
+							<img id="bird_image" width="60%" align="center" style="margin-top: 0.5em" />
+							<br/>
+							<input type="hidden" name="x1" value="" />
+							<input type="hidden" name="y1" value="" />
+							<input type="hidden" name="x2" value="" />
+							<input type="hidden" name="y2" value="" />
+							<input type="hidden" name="w" value="" />
+							<input type="hidden" name="h" value="" />
+							<input type="hidden" name="lat" value="" />
+							<input type="hidden" name="lon" value="" />
+							<input type="hidden" name="location" value="" />
+							Observation date: (Year doesn't matter)
+							<input type="date" id="date" name="date" value="2019-01-01" min="2019-01-01" max="2019-12-31"> <br/><br/>
+    				      	<input type="text" name="addr" placeholder="Where did you see it?" value="" id="addr" size="10" style="width: 50%; margin: auto; display: inline;" />
+ 				      		<button type="button" id="search_addr" style="display: inline;" onclick="addr_search();">Location Search</button>
+				      		<div id="results"></div>
+				      		<div id="selected_addr"></div>
+				      		<br/>
+				      		<input class="button special big" id="Upload" type=submit value=Upload>
+                     </form>
+                         	
+
+	  
 					</div>
 				</section>
 				
@@ -166,6 +180,64 @@
 				    event.preventDefault();
 				}
 
+			</script>
+			<script>
+				// Thanks to this https://derickrethans.nl/leaflet-and-nominatim.html
+				function addr_search() {
+					var inp = document.getElementById("addr");
+
+					$.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=us&accept-language=en-US&addressdetails=0&q=' + inp.value, function(data) {
+						var items = [];
+
+						$.each(data, function(key, val) {
+							items.push(
+								"<span><a href='#' onclick='chooseAddr(" +
+								val.lat + ", " + val.lon + ", encodeURI(\"" + val.display_name.replace(/'/g, "%27") + "\"));return false;'>" + val.display_name +
+								'</a></span><br/>'
+								);
+						});
+						$('#results').empty();
+						if (items.length != 0) {
+							$('<span>', { html: "<br/>Select a location: " }).appendTo('#results');
+							$('<p>', {
+								'class': 'my-new-list',
+								html: items.join('')
+							}).appendTo('#results');
+						} else {
+							$('<p>', { html: "No results found" }).appendTo('#results');
+						}
+					});
+				}
+				function chooseAddr(lat, lng, name) {
+					$('input[name="lat"]').val(lat);
+					$('input[name="lon"]').val(lng);
+					$('input[name="location"]').val(decodeURI(name));
+					$('#selected_addr').empty();
+					$('<span>', { html: "Selected address: " + decodeURI(name) + " (" + lat + ", " + lng + ")"}).appendTo('#selected_addr');
+  				}
+			</script>
+			<script type="text/javascript">
+				$(document).keypress(
+  					function(event){
+    				if (event.which == '13') {
+						event.preventDefault();
+					}
+				});
+				var input2 = document.getElementById("Upload");
+				input2.addEventListener("click", function(event) {
+					if (event.keyCode === 13) {
+						event.preventDefault();
+					}
+				});
+			</script>	
+			<script>
+				var input = document.getElementById("addr");
+				input.addEventListener("keyup", function(event) {
+					if (event.keyCode === 13) {
+						event.preventDefault();
+						document.getElementById("search_addr").click();
+					}
+				});
 			</script>
 
 	</body>
