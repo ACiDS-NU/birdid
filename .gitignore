@@ -126,3 +126,5 @@ src/web_images
 # img files
 bird_img*
 
+src/ebd_US-AL-101_201801_201801_relMay-2018.txt
+src/test_ebird.txt

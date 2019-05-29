@@ -156,7 +156,7 @@ def index():
 			lon = float(request.form['lon'])
 			messages['location'] = request.form['location']
 			print(lat, lon)
-			poly = calc_poly(lat, lon, km=20)
+			poly = calc_poly(lat, lon, km=50)
 			print(poly)
 			Do_GeoSpatial_Filtering_latlon = 1
 			messages["lat_lon_default"] = 0
@@ -371,7 +371,7 @@ def zh_tw_index():
 					taxon_this = Bird_taxon[Bird_this]
 					taxon_occurrence_this = json.loads(_request_taxon_occurence(taxon_this, x1, x2, poly))['count']
 					occ[ii] = taxon_occurrence_this
-					if taxon_occurrence_this / occ['total'] < 0.0003: # Temporary
+					if taxon_occurrence_this / occ['total'] < 0.00001: # Temporary
 						probs[ii] = 0
 				tn_idx = topn_idx(probs, n=5)
 				tn_idx = tn_idx[np.isin(tn_idx, prob_idx)]
