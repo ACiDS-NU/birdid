@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Plover - A Bird IDing web app</title>
+		<title>Plover - 鳥類影像辨識系統</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
@@ -18,12 +18,12 @@
 
 		<!-- Header -->
 			<header id="header" class="alt">
-				<h1><strong><a href="{{ url_for('index') }}">Plover</a></strong></h1>
+				<h1><strong><a href="{{ url_for('zh_tw_index') }}">Plover</a></strong></h1>
 				<nav id="nav">
 					<ul>
-						<li><a href="{{ url_for('zh_tw_index') }}">繁體中文</a></li>
-						<li><a href="{{ url_for('index') }}">Home</a></li>
-						<li><a href="{{ url_for('about') }}">About</a></li>
+						<li><a href="{{ url_for('index') }}">English</a></li>
+						<li><a href="{{ url_for('zh_tw_index') }}">首頁</a></li>
+						<li><a href="{{ url_for('zh_tw_about') }}">關於</a></li>
 						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
 					</ul>
 				</nav>
@@ -34,9 +34,9 @@
 		<!-- Banner -->
 			<section id="banner">
 				<h2>Plover</h2>
-				<p>A simple bird identification web app for<br /> new and intermediate birders.</p>
+				<p>為賞鳥新手打造的影像辨識系統！</p>
 				<ul class="actions">
-					<li><a href="#GetStarted" class="button special big">Get Started</a></li>
+					<li><a href="#GetStarted" class="button special big">現在就來試試看</a></li>
 				</ul>
 			</section>
 
@@ -46,12 +46,12 @@
 						<div class="row 200%">
 							<div class="6u 12u$(medium)">
 								<header class="major">
-									<h2>Get started</h2>
-									<p>Upload. Crop. Identify. <br/> It's that simple!</p>
+									<h2>三步驟認鳥</h2>
+									<p>上傳、裁切、辨識。<br/>超簡單，新手也能三秒上手！</p>
 								</header>
 							</div>
 							<div class="6u$ 12u$(medium)">
-								<p>A convolutional neural network trained with the NAbird dataset from Cornell Lab of Ornithology, this app can now identify over 400 species that are regularly seen in the North America. Try it with your photo!</p>
+								<p>我們使用卷積神經網路 (Convolutional Neural Network)，以照片辨識美國常見的 400 種鳥類，讓您不論是新手，或是對美國鳥類不熟悉，都能快速認鳥！</p>
 							</div>
 						</div>
 					</div>
@@ -61,14 +61,14 @@
             	<section id="upload" class="wrapper style1 special" style="padding: 1.5em 0em 0.5em 0em;">
 					<div class="container">
 						<header class="major" style="margin-bottom: 0.5em">
-							<h2>Upload your photo</h2>
-							<p style="color: #333;">then drag to crop out the bird.</p>
+							<h2>首先，上傳照片</h2>
+							<p style="color: #333;">接著在照片上拖曳，將想辨認的鳥框起來</p>
 						</header>
-						<p style="color: #777;">(Mobile users, let me know if the drag feature is OK or not, thanks!)</p>
+						<p style="color: #777;">手機用戶如果覺得很難用，請讓我們知道！ XD</p>
                     	<form method=post enctype=multipart/form-data>
                     		
 							
-							<input type="file" id="file" name="file" align="center" />
+							<input type="file" id="file" name="file" align="center"/>
 							<br/>
 							<img id="bird_image" width="60%" align="center" style="margin-top: 0.5em" />
 							<br/>
@@ -81,14 +81,15 @@
 							<input type="hidden" name="lat" value="" />
 							<input type="hidden" name="lon" value="" />
 							<input type="hidden" name="location" value="" />
-							Observation date: (Year doesn't matter)
-							<input type="date" id="date" name="date" value="2019-01-01" min="2019-01-01" max="2019-12-31"> <br/><br/>
-    				      	<input type="text" name="addr" placeholder="Where did you see it?" value="" id="addr" size="10" style="width: 50%; margin: auto; display: inline;" />
- 				      		<button type="button" id="search_addr" style="display: inline;" onclick="addr_search();">Location Search</button>
+							下列資訊可留白，但輸入這些資訊可以幫助我們更精確地進行辨識。<br/><br/>
+							拍攝日期（年份不重要，我們只用日期來查詢鳥類出現的機率）：
+							<input type="date" id="date" name="date" min="2019-01-01" max="2019-12-31"> <br/><br/>
+    				      	<input type="text" name="addr" placeholder="您在哪裡拍攝這張照片的？（請用英文）" value="" id="addr" size="10" style="width: 50%; margin: auto; display: inline;" />
+ 				      		<button type="button" id="search_addr" style="display: inline;" onclick="addr_search();">查詢地址</button>
 				      		<div id="results"></div>
 				      		<div id="selected_addr"></div>
 				      		<br/>
-				      		<input class="button special big" id="Upload" type=submit value=Upload>
+				      		<input class="button special big" id="Upload" type=submit value="上傳照片">
                      </form>
                          	
 
@@ -106,8 +107,8 @@
 						<li><a href="https://www.flickr.com/photos/darren8221/" class="icon fa-flickr" target="_blank"></a></li>
 					</ul>
 					<ul class="copyright">
-						<li>&copy; The Piping Plover</li>
-						<li>Design: <a href="http://templated.co" target="_blank">TEMPLATED</a></li>
+						<li>版面設計：<a href="http://templated.co" target="_blank">TEMPLATED</a></li>
+						<li>聯絡我們：contact@plover-birdid.com</li>
 						<li>Contact: contact@plover-birdid.com</li>
 					</ul>
 				</div>
@@ -199,13 +200,13 @@
 						});
 						$('#results').empty();
 						if (items.length != 0) {
-							$('<span>', { html: "<br/>Select a location: " }).appendTo('#results');
+							$('<span>', { html: "<br/>選擇您的拍照位置：" }).appendTo('#results');
 							$('<p>', {
 								'class': 'my-new-list',
 								html: items.join('')
 							}).appendTo('#results');
 						} else {
-							$('<p>', { html: "No results found" }).appendTo('#results');
+							$('<p>', { html: "並未找到符合條件的地址，請再試一次。" }).appendTo('#results');
 						}
 					});
 				}
@@ -214,7 +215,7 @@
 					$('input[name="lon"]').val(lng);
 					$('input[name="location"]').val(decodeURI(name));
 					$('#selected_addr').empty();
-					$('<span>', { html: "Selected address: " + decodeURI(name) + " (" + lat + ", " + lng + ")"}).appendTo('#selected_addr');
+					$('<span>', { html: "您選擇的地址是：" + decodeURI(name) + " (" + lat + ", " + lng + ")"}).appendTo('#selected_addr');
   				}
 			</script>
 			<script type="text/javascript">

@@ -47,11 +47,11 @@ def calc_poly(lat, lon, km=20):
 	lat_deg = km / 2 / 111 # This is in km using length of 1 deg latitude ~= 111 km at 40 deg N
 	lon_deg_u = lat_deg / np.cos((lat + lat_deg) * np.pi / 180.)
 	lon_deg_d = lat_deg / np.cos((lat - lat_deg) * np.pi / 180.)
-	print('POLYGON(({:.2f}%20{:.2f},{:.2f}%20{:.2f},{:.2f}%20{:.2f},{:.2f}%20{:.2f},{:.2f}%20{:.2f}))'.format(
+	print('POLYGON(({:.3f}%20{:.3f},{:.3f}%20{:.3f},{:.3f}%20{:.3f},{:.3f}%20{:.3f},{:.3f}%20{:.3f}))'.format(
 		lon-lon_deg_u, lat+lat_deg, lon-lon_deg_d, lat-lat_deg, 
 		lon+lon_deg_d, lat-lat_deg, lon+lon_deg_u, lat+lat_deg,
 		lon-lon_deg_u, lat+lat_deg))
-	return 'POLYGON(({:.2f}%20{:.2f},{:.2f}%20{:.2f},{:.2f}%20{:.2f},{:.2f}%20{:.2f},{:.2f}%20{:.2f}))'.format(
+	return 'POLYGON(({:.3f}%20{:.3f},{:.3f}%20{:.3f},{:.3f}%20{:.3f},{:.3f}%20{:.3f},{:.3f}%20{:.3f}))'.format(
 		lon-lon_deg_u, lat+lat_deg, lon-lon_deg_d, lat-lat_deg, 
 		lon+lon_deg_d, lat-lat_deg, lon+lon_deg_u, lat+lat_deg,
 		lon-lon_deg_u, lat+lat_deg,)
@@ -122,6 +122,10 @@ def allowed_file(filename):
 def about():
 	return render_template('about.html')
 
+@application.route('/zh-tw/about')
+def zh_tw_about():
+	return render_template('zh-tw/about.html')
+
 @application.route('/how_it_works')
 def how_it_works():
 	return render_template('how_it_works.html')
@@ -132,14 +136,9 @@ def index():
 		messages = {}
 		# check if the post request has the file part
 		if 'file' not in request.files:
-			# flash('No file part')
 			return redirect(request.url)
 		file = request.files['file']
-		# filestr = file.read()
-		# if user does not select file, browser also
-		# submit a empty part without filename
 		if file.filename == '':
-		# flash('No selected file')
 			return redirect(request.url)
 
 		try:
@@ -161,8 +160,8 @@ def index():
 			print(poly)
 			Do_GeoSpatial_Filtering_latlon = 1
 			messages["lat_lon_default"] = 0
-			messages["lat"] = '{:.2f}'.format(lat)
-			messages["lon"] = '{:.2f}'.format(lon)
+			messages["lat"] = '{:.3f}'.format(lat)
+			messages["lon"] = '{:.3f}'.format(lon)
 
 		except:
 			Do_GeoSpatial_Filtering_latlon = 0
@@ -187,7 +186,6 @@ def index():
 			npimg = np.fromstring(filestr, np.uint8)
 			img_r = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 			img = cv2.cvtColor(img_r , cv2.COLOR_BGR2RGB)
-			# img = img_r
 
 			im_h = img.shape[0]
 			im_w = img.shape[1]
@@ -222,27 +220,17 @@ def index():
 				actual_y1 = 0
 				actual_y2 = im_h
 				messages["im_selection_default"] = 1
-
-			# if actual_h > actual_w:
-			# 	actual_y2 -= actual_h - actual_w
-			# if actual_w > actual_h:
-			# 	actual_x2 -= actual_w - actual_h
-			# print(type(img))
 			img = img[actual_y1:actual_y2,actual_x1:actual_x2]
 			img_r = img_r[actual_y1:actual_y2,actual_x1:actual_x2]
 			img = paint_to_square(img)
 			data = np.expand_dims(img, axis = 0) / 255.0
-			# print(data.shape)
 			probs = model.predict(data,verbose=1).flatten()
-			# print(probs)
-			# print(probs.shape)
 			occ = {}
 			if GeoSpatial_Filtering:
 				
-				prob_idx = more_than_some_percent(probs).flatten()
+				prob_idx = more_than_some_percent(probs).flatten()[np.isin(more_than_some_percent(probs).flatten(), topn_idx(probs, n=5))]
 				print(prob_idx)
 				print(probs[prob_idx])
-				#today = datetime.datetime.now()+datetime.timedelta(days=-60)
 				x1, x2 = time_span(obs_date, span=7)
 				occ['total'] = json.loads(_request_occurrence(x1, x2, poly))['count']
 				for idx, ii in enumerate(prob_idx):
@@ -253,19 +241,12 @@ def index():
 					occ[ii] = taxon_occurrence_this
 					if taxon_occurrence_this / occ['total'] < 0.0003: # Temporary
 						probs[ii] = 0
-					# taxon_occurrence_AR = json.loads(_request_taxon_occurence(9510564, x1, x2)) # American Robin
-				# tn_idx = prob_idx[np.argsort(np.multiply(probs[prob_idx], taxon_occurrence),0)[0:3]] # ish
 				tn_idx = topn_idx(probs, n=5)
 				tn_idx = tn_idx[np.isin(tn_idx, prob_idx)]
 			else:
 				occ['total'] = 0
 				tn_idx = topn_idx(probs, n=3)
 			print(tn_idx)
-			# print(today)
-			# print("Prediction: {} ({:.1f} %), {} ({:.1f} %), or {} ({:.1f} %)".format(
-			# 	Birds[int(class_indices_inv_map[tn_idx[0]])], probs[tn_idx[0]]*100,
-			# 	Birds[int(class_indices_inv_map[tn_idx[1]])], probs[tn_idx[1]]*100,
-			# 	Birds[int(class_indices_inv_map[tn_idx[2]])], probs[tn_idx[2]]*100))
 			Bird_candidates = []
 			for ii in range(len(tn_idx)):
 				b, p = (Birds[int(class_indices_inv_map[tn_idx[ii]])], '{:.1f}'.format(probs[tn_idx[ii]]*100))
@@ -278,65 +259,145 @@ def index():
 					occ[tn_idx[ii]] = 0
 				Bird = {'bird': b, 'prob': p, 'description': BD, 'image': BIF, 'bird_link': BL, 'photographer': PH, 'occ': occ[tn_idx[ii]]}
 				Bird_candidates.append(Bird)
-			# if len(tn_idx) > 0:
-			# 	b1, p1 = (Birds[int(class_indices_inv_map[tn_idx[0]])], '{:.1f}'.format(probs[tn_idx[0]]*100))
-			# 	BD1 = Markup(Bird_description[b1])
-			# 	BI1 = bird_img.loc[bird_img['class_name_sp'].isin([b1])].sample(n=1)
-			# 	BIF1 = img_root + str(BI1['image_name_fname_only'].values[0])
-			# 	PH1 = str(BI1['photographer'].values[0])
-			# 	BL1 = 'https://en.wikipedia.org/wiki/' + Bird_link[b1]
-			# 	if not GeoSpatial_Filtering:
-			# 		occ[tn_idx[0]] = 0
-			# 	Bird1 = {'bird': b1, 'prob': p1, 'description': BD1, 'image': BIF1, 'bird_link': BL1, 'photographer': PH1, 'occ': occ[tn_idx[0]]}
-				
-			# else:
-			# 	Bird1 = []
-			# if len(tn_idx) > 1:
-			# 	b2, p2 = (Birds[int(class_indices_inv_map[tn_idx[1]])], '{:.1f}'.format(probs[tn_idx[1]]*100))
-			# 	BD2 = Markup(Bird_description[b2])
-			# 	BI2 = bird_img.loc[bird_img['class_name_sp'].isin([b2])].sample(n=1)
-			# 	BIF2 = img_root + str(BI2['image_name_fname_only'].values[0])
-			# 	PH2 = str(BI2['photographer'].values[0])
-			# 	BL2 = 'https://en.wikipedia.org/wiki/' + Bird_link[b2]
-			# 	if not GeoSpatial_Filtering:
-			# 		occ[tn_idx[1]] = 0
-			# 	Bird2 = {'bird': b2, 'prob': p2, 'description': BD2, 'image': BIF2, 'bird_link': BL2, 'photographer': PH2, 'occ': occ[tn_idx[1]]}
-				
-			# else:
-			# 	Bird2 = []
-			# if len(tn_idx) > 2:
-			# 	b3, p3 = (Birds[int(class_indices_inv_map[tn_idx[2]])], '{:.1f}'.format(probs[tn_idx[2]]*100))
-			# 	BD3 = Markup(Bird_description[b3])
-			# 	BI3 = bird_img.loc[bird_img['class_name_sp'].isin([b3])].sample(n=1)
-			# 	BIF3 = img_root + str(BI3['image_name_fname_only'].values[0])
-			# 	PH3 = str(BI3['photographer'].values[0])
-			# 	BL3 = 'https://en.wikipedia.org/wiki/' + Bird_link[b3]
-			# 	if not GeoSpatial_Filtering:
-			# 		occ[tn_idx[2]] = 0
-			# 	Bird3 = {'bird': b3, 'prob': p3, 'description': BD3, 'image': BIF3, 'bird_link': BL3, 'photographer': PH3, 'occ': occ[tn_idx[2]]}
-				
-			# else:
-			# 	Bird3 = []
-
-			# BI1 = 'static/bird_img/' + str(bird_img.loc[bird_img['class_name_sp'].isin([b1])].sample(n=1)['image_name_fname_only'].values[0])
-			# BI2 = 'static/bird_img/' + str(bird_img.loc[bird_img['class_name_sp'].isin([b2])].sample(n=1)['image_name_fname_only'].values[0])
-			# BI3 = 'static/bird_img/' + str(bird_img.loc[bird_img['class_name_sp'].isin([b3])].sample(n=1)['image_name_fname_only'].values[0])
-			
-			# print(os.path.join(application.config['UPLOAD_FOLDER'], filename))
 			cv2.imwrite(os.path.join(application.config['UPLOAD_FOLDER'], filename), paint_to_square(img_r, desired_size=500, pad=False))
-			# file.save(os.path.join(application.config['UPLOAD_FOLDER'], filename))
-			# return render_template("home.html")#redirect(url_for('uploaded_file', filename=filename))
-			# return render_template("results.html", filename=filename, Bird1=Bird1, Bird2=Bird2, Bird3=Bird3, num_birds=len(tn_idx), occ_tot=occ['total'], messages=messages)
 			return render_template("results.html", filename=filename, Bird_candidates=Bird_candidates, num_birds=len(tn_idx), occ_tot=occ['total'], messages=messages)
-	# return render_template("home.html")
 	return render_template("index.html")
+
+@application.route('/zh-tw', methods=['GET', 'POST'])
+def zh_tw_index():
+	if request.method == 'POST':
+		messages = {}
+		# check if the post request has the file part
+		if 'file' not in request.files:
+			return redirect(request.url)
+		file = request.files['file']
+		if file.filename == '':
+			return redirect(request.url)
+		try:
+			obs_date = datetime.datetime.strptime(request.form['date'], '%Y-%m-%d')
+			messages["obs_date_default"] = 0
+			messages["obs_date"] = obs_date.date()
+			Do_GeoSpatial_Filtering_date = 1
+		except:
+			obs_date = datetime.datetime.now()
+			messages["obs_date_default"] = 1
+			Do_GeoSpatial_Filtering_date = 1
+			print("Date defaulted.")
+		try:
+			lat = float(request.form['lat'])
+			lon = float(request.form['lon'])
+			messages['location'] = request.form['location']
+			print(lat, lon)
+			poly = calc_poly(lat, lon, km=20)
+			print(poly)
+			Do_GeoSpatial_Filtering_latlon = 1
+			messages["lat_lon_default"] = 0
+			messages["lat"] = '{:.3f}'.format(lat)
+			messages["lon"] = '{:.3f}'.format(lon)
+
+		except:
+			Do_GeoSpatial_Filtering_latlon = 0
+			messages["lat_lon_default"] = 1
+			print("Lat lon defaulted.")
+
+		if Do_GeoSpatial_Filtering_latlon and Do_GeoSpatial_Filtering_date:
+			GeoSpatial_Filtering = 1
+			messages["GeoSpatial_Filtering"] = 1
+			print("We are doing GeoSpatial_Filtering")
+		else:
+			GeoSpatial_Filtering = 0
+			messages["GeoSpatial_Filtering"] = 0
+			print("We are not doing GeoSpatial_Filtering")
+
+
+		print(obs_date.date())
+		if file and allowed_file(file.filename):
+			file_ext = '.' + secure_filename(file.filename).rsplit('.', 1)[1].lower()
+			filename = str(uuid.uuid4()) + file_ext
+			filestr = file.read()
+			npimg = np.fromstring(filestr, np.uint8)
+			img_r = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+			img = cv2.cvtColor(img_r , cv2.COLOR_BGR2RGB)
+
+			im_h = img.shape[0]
+			im_w = img.shape[1]
+			print(im_h, im_w)
+
+			if all (k in request.form for k in ("x1","x2","y1","y2","w","h")):
+				try:
+					x1 = int(request.form['x1'])
+					x2 = int(request.form['x2'])
+					y1 = int(request.form['y1'])
+					y2 = int(request.form['y2'])
+					w = int(request.form['w'])
+					h = int(request.form['h'])
+					messages["im_selection_default"] = 0
+				except:
+					x1 = 0
+					x2 = im_w
+					y1 = 0
+					y2 = im_h
+					w = im_w
+					h = im_h
+					messages["im_selection_default"] = 1
+
+			print(x1, x2, y1, y2, w, h)
+			actual_x1 = round(x1 / w * im_w)
+			actual_x2 = round(x2 / w * im_w)
+			actual_y1 = round(y1 / h * im_h)
+			actual_y2 = round(y2 / h * im_h)
+			if (actual_x2 - actual_x1) == 0 or (actual_y2 - actual_y1) == 0:
+				actual_x1 = 0
+				actual_x2 = im_w
+				actual_y1 = 0
+				actual_y2 = im_h
+				messages["im_selection_default"] = 1
+			img = img[actual_y1:actual_y2,actual_x1:actual_x2]
+			img_r = img_r[actual_y1:actual_y2,actual_x1:actual_x2]
+			img = paint_to_square(img)
+			data = np.expand_dims(img, axis = 0) / 255.0
+			probs = model.predict(data,verbose=1).flatten()
+			occ = {}
+			if GeoSpatial_Filtering:
+				
+				prob_idx = more_than_some_percent(probs).flatten()[np.isin(more_than_some_percent(probs).flatten(), topn_idx(probs, n=5))]
+				print(prob_idx)
+				print(probs[prob_idx])
+				x1, x2 = time_span(obs_date, span=7)
+				occ['total'] = json.loads(_request_occurrence(x1, x2, poly))['count']
+				for idx, ii in enumerate(prob_idx):
+					# Gather geo-spatial info
+					Bird_this = Birds[int(class_indices_inv_map[ii])]
+					taxon_this = Bird_taxon[Bird_this]
+					taxon_occurrence_this = json.loads(_request_taxon_occurence(taxon_this, x1, x2, poly))['count']
+					occ[ii] = taxon_occurrence_this
+					if taxon_occurrence_this / occ['total'] < 0.0003: # Temporary
+						probs[ii] = 0
+				tn_idx = topn_idx(probs, n=5)
+				tn_idx = tn_idx[np.isin(tn_idx, prob_idx)]
+			else:
+				occ['total'] = 0
+				tn_idx = topn_idx(probs, n=3)
+			print(tn_idx)
+			Bird_candidates = []
+			for ii in range(len(tn_idx)):
+				b, p = (Birds[int(class_indices_inv_map[tn_idx[ii]])], '{:.1f}'.format(probs[tn_idx[ii]]*100))
+				BD = Markup(Bird_description[b])
+				BI = bird_img.loc[bird_img['class_name_sp'].isin([b])].sample(n=1)
+				BIF = img_root + str(BI['image_name_fname_only'].values[0])
+				PH = str(BI['photographer'].values[0])
+				BL = 'https://en.wikipedia.org/wiki/' + Bird_link[b]
+				if not GeoSpatial_Filtering:
+					occ[tn_idx[ii]] = 0
+				Bird = {'bird': b, 'prob': p, 'description': BD, 'image': BIF, 'bird_link': BL, 'photographer': PH, 'occ': occ[tn_idx[ii]]}
+				Bird_candidates.append(Bird)
+			cv2.imwrite(os.path.join(application.config['UPLOAD_FOLDER'], filename), paint_to_square(img_r, desired_size=500, pad=False))
+			return render_template("zh-tw/results.html", filename=filename, Bird_candidates=Bird_candidates, num_birds=len(tn_idx), occ_tot=occ['total'], messages=messages)
+	return render_template("zh-tw/index.html")
 
 @application.route('/uploads/<filename>')
 def uploaded_file(filename):
 	return send_from_directory(application.config['UPLOAD_FOLDER'],filename)
-
-# @application.route('/results/<filename>')
-# def results(filename):
 	
 
 pkl_file = open('static/Birds.pkl', 'rb')

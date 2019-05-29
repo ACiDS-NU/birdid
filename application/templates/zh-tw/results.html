@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Plover - A Bird IDing web app</title>
+		<title>Plover - 鳥類影像辨識系統</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
@@ -35,11 +35,12 @@
 
 		<!-- Header -->
 			<header id="header">
-				<h1><strong><a href="{{ url_for('index') }}">Plover</a></strong></h1>
+				<h1><strong><a href="{{ url_for('zh_tw_index') }}">Plover</a></strong></h1>
 				<nav id="nav">
 					<ul>
-						<li><a href="{{ url_for('index') }}">Home</a></li>
-						<li><a href="{{ url_for('about') }}">About</a></li>
+						<li><a href="{{ url_for('index') }}">English</a></li>
+						<li><a href="{{ url_for('zh_tw_index') }}">首頁</a></li>
+						<li><a href="{{ url_for('zh_tw_about') }}">關於</a></li>
 						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
 					</ul>
 				</nav>
@@ -52,42 +53,47 @@
 				<div class="container">
 					<div class="row 150%">
 						<div class="6u 12u$(xsmall)">
-								<h2>Your upload</h2>
+								<h2>您的照片：</h2>
 								<img id="image" src="{{ url_for('uploaded_file', filename=filename) }}" style="max-width:70%; max-height: 400px;" />
 
 						
 						</div>
 						<div class="6u 12u$(small)">
-							<h2>Our predictions</h2>
+							<h2>我們的預測：</h2>
 							{% if num_birds == 0 %}
-								<p>Sorry, there is no candidate birds at this location for this period of time</p>
+								<p>不好意思，在您提供的日期與地區沒有符合條件的鳥類。</p>
 							{% endif %}
 							{% for Bird in Bird_candidates %}
 								<h4>{{Bird.bird|replace("_"," ")}}</h4>
-								Visual probability: {{Bird.prob}} % 
+								電腦分析有 {{Bird.prob}} % 是這隻鳥 <br/>
 									{% if messages.GeoSpatial_Filtering == 1 %}
-									| Geospatial occurance: {{Bird.occ}} / {{occ_tot}}
+									地理分佈：{{Bird.occ}} 次 / {{occ_tot}} 筆全部紀錄
 									{% endif %}
 								<br/>
 							{% endfor %}
 							
 							
 							{% if messages.GeoSpatial_Filtering == 0 %}
-							<br/>Did not perform geospatial filtering because: 
+							<br/>本次辨識並未以地理分佈篩選鳥種，因為
 								{% if messages.lat_lon_default == 1 %}
-								Geolocation is not set. 
+								我們不知道您拍到這隻鳥的位置
+								{% endif %}
+								{% if messages.obs_date_default * messages.lat_lon_default == 1 %}
+								，而且
+								{% else %}
+								。
 								{% endif %}
 								{% if messages.obs_date_default == 1 %}
-								Date is not set.
+								我們不知道您拍到這隻鳥的日期。
 								{% endif %}
 							{% else %}
-								<br/>Performed geospatial filtering: <br/>
-								Observation date: {{messages.obs_date}} <br/>
-								Location: {{messages.location}} <br/>
-								Coordinates: ({{messages.lat}}, {{messages.lon}})
+								<br/>本次辨識以下列資訊篩選鳥種：<br/>
+								拍攝日期：{{messages.obs_date}} <br/>
+								拍攝位置：{{messages.location}} <br/>
+								座標： ({{messages.lat}}, {{messages.lon}})
 							{% endif %}
 
-							<br/><br/><a href="{{ url_for('index')}}">Go back and try another photo!</a>
+							<br/><br/><a href="{{ url_for('zh_tw_index')}}">換一張照片再試一次吧！</a>
 
 						</div>
 					</div>
@@ -100,8 +106,8 @@
 						<div class="6u 12u$(xsmall)" style="text-align: right;">
 							<h4>{{Bird.bird|replace("_"," ")}}</h4>
 							{{Bird.description}}
-							<a href={{Bird.bird_link}} target="_blank">Full text at Wikipedia</a> | 
-							<a href="https://www.allaboutbirds.org/guide/{{Bird.bird}}" target="_blank">Read more at All About Birds</a>
+							<a href={{Bird.bird_link}} target="_blank">英文維基百科</a> | 
+							<a href="https://www.allaboutbirds.org/guide/{{Bird.bird}}" target="_blank">北美 All About Birds 網站</a>
 						</div>
 						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
 							<figure style="max-width: 60%;">
@@ -114,7 +120,7 @@
 					{% endfor %}
 					
 					<div align="center" style="margin-top: 1em;">
-						<a href="{{ url_for('index')}}">Go back and try another photo!</a>
+						<a href="{{ url_for('zh_tw_index')}}">換一張照片再試一次</a>
 					</div>
 				</div>
 			</section>
@@ -128,8 +134,8 @@
 					</ul>
 					<ul class="copyright">
 						<li>&copy; The Piping Plover</li>
-						<li>Design: <a href="http://templated.co" target="_blank">TEMPLATED</a></li>
-						<li>Contact: contact@plover-birdid.com</li>
+						<li>版面設計：<a href="http://templated.co" target="_blank">TEMPLATED</a></li>
+						<li>聯絡我們：contact@plover-birdid.com</li>
 					</ul>
 				</div>
 			</footer>

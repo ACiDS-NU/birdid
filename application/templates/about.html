@@ -9,7 +9,7 @@
 		<title>Plover - A Bird IDing web app</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="static/css/main.css" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 	</head>
 	<body>
 
@@ -77,10 +77,10 @@
 			</footer>
 
 		<!-- Scripts -->
-			<script src="static/js/jquery.min.js"></script>
-			<script src="static/js/skel.min.js"></script>
-			<script src="static/js/util.js"></script>
-			<script src="static/js/main.js"></script>
+			<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 	</body>
 </html>
