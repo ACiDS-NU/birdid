@@ -127,4 +127,8 @@ src/web_images
 bird_img*
 
 src/ebd_US-AL-101_201801_201801_relMay-2018.txt
+
 src/test_ebird.txt
+
+application/.well-known/
+src/Read_ebird.py

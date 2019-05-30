@@ -63,7 +63,7 @@
 					<div class="container">
 						<header class="major" style="margin-bottom: 0.5em">
 							<h2>Upload your photo</h2>
-							<p style="color: #333;">then drag to crop out the bird.</p>
+							<p style="color: #333;">then drag to closely crop out the bird.</p>
 						</header>
 						<p style="color: #777;">(Mobile users, let me know if the drag feature is OK or not, thanks!)</p>
                     	<form method=post enctype=multipart/form-data>
@@ -83,7 +83,7 @@
 							<input type="hidden" name="lon" value="" />
 							<input type="hidden" name="location" value="" />
 							Observation date: (Year doesn't matter)
-							<input type="date" id="date" name="date" value="2019-01-01" min="2019-01-01" max="2019-12-31"> <br/><br/>
+							<input type="date" id="date" name="date" min="2019-01-01" max="2019-12-31"> <br/><br/>
     				      	<input type="text" name="addr" placeholder="Where did you see it?" value="" id="addr" size="10" style="width: 50%; margin: auto; display: inline;" />
  				      		<button type="button" id="search_addr" style="display: inline;" onclick="addr_search();">Location Search</button>
 				      		<div id="results"></div>

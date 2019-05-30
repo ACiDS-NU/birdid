@@ -63,7 +63,7 @@
 					<div class="container">
 						<header class="major" style="margin-bottom: 0.5em">
 							<h2>首先，上傳照片</h2>
-							<p style="color: #333;">接著在照片上拖曳，將想辨認的鳥框起來</p>
+							<p style="color: #333;">接著在照片上拖曳，將想辨認的鳥盡量緊密地框起來</p>
 						</header>
 						<p style="color: #777;">手機用戶如果覺得很難用，請讓我們知道！ XD</p>
                     	<form method=post enctype=multipart/form-data>
@@ -86,7 +86,7 @@
 							拍攝日期（年份不重要，我們只用日期來查詢鳥類出現的機率）：
 							<input type="date" id="date" name="date" min="2019-01-01" max="2019-12-31"> <br/><br/>
     				      	<input type="text" name="addr" placeholder="您在哪裡拍攝這張照片的？（請用英文）" value="" id="addr" size="10" style="width: 50%; margin: auto; display: inline;" />
- 				      		<button type="button" id="search_addr" style="display: inline;" onclick="addr_search();">查詢地址</button>
+ 				      		<button type="button" id="search_addr" style="display: inline; font-family: inherit;" onclick="addr_search();">查詢地址</button>
 				      		<div id="results"></div>
 				      		<div id="selected_addr"></div>
 				      		<br/>
