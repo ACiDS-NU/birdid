@@ -44,7 +44,7 @@
 					因為還是拍鳥的新手，常常認不出來拍到的是什麼鳥。雖然 Cornell 鳥類實驗室出了 Merlin 這個神一般的 app（功能跟這個網站很像），為了練習 coding 跟多認識一些鳥，還是決定來做這個 web app 好了 XD</p>
 					<h3>運作原理</h3>
 					<p>這個網站使用了卷積神經網路 (Convolutional Neural Network, CNN)。CNN 是一種非常適合用來處理圖像辨識的架構。這個 CNN 的原始參數是從 MobileNetV2 來的，我一開始用 feature extractor 模式訓練了 10 回合 (epochs)，接著再在 fine-tuning 模式訓練了 20 回合。這裡使用的資料集是 NAbirds, 包含 404 種鳥共 48,352 張圖片的資料。訓練是用 Tensorflow 2.0 package, 在 Google Colab 這個平台上進行的。原始碼我都放在 <a href="https://github.com/darrenjhsu/birdid" target="_blank">GitHub</a> 上了，有興趣的朋友可以自行參閱。</p>
-					<p>另一部分，如果您提供了拍攝日期和地點的資訊，在辨識時我們另外會即時參考 Global Biodiversity Information Facility - eBird Observation Dataset (<a href="https://www.gbif.org/dataset/4fa7b334-ce0d-4e88-aaae-2e0c138d049e" target="_blank">GBIF - EOD</a>) 的資料來篩選可能的結果（也就是為什麼上傳後要等比較久一點）。有些鳥長得實在很像（像是西方／東方草地鷚 Western / Eastern Meadowlark），只能用地理分佈來篩選。在結果頁面上看到的兩個地理分佈回傳值，第一個是在您拍攝日期的前後七天，有多少筆這種鳥的資料，後面則是全部紀錄的筆數。未來我們會將這個數字改成這隻鳥被紀錄到的頻率。</p>
+					<p>另一部分，如果您提供了拍攝日期和地點的資訊，在辨識時我們另外會即時參考 Global Biodiversity Information Facility - eBird Observation Dataset (<a href="https://www.gbif.org/dataset/4fa7b334-ce0d-4e88-aaae-2e0c138d049e" target="_blank">GBIF - EOD</a>) 的資料來篩選可能的結果（也就是為什麼上傳後要等比較久一點）。有些鳥長得實在很像（像是西方／東方草地鷚 Western / Eastern Meadowlark），只能用地理分佈來篩選。在結果頁面上看到的地理分佈回傳值，是這隻鳥被人們紀錄到的頻率。</p>
 					<h3>NAbird 資料集</h3>
 					<p><a href="http://dl.allaboutbirds.org/nabirds" target="_blank">這個資料集</a>是由 Cornell Lab of Ornithology 蒐集並發布的，裡面包含 48,352 張圖片，橫跨 404 種北美常見的鳥種，以及一共 555 種型態。我把他們拆成 36k/6k/6k train/validation/test. 資料集另外有提供鳥類在每張圖的位置，我用來裁圖並且加上黑邊讓每張圖都是方形的。 </p>
 					<h3>這個網站</h3>

@@ -68,7 +68,11 @@
 								<h4>{{Bird.bird|replace("_"," ")}}</h4>
 								Visual probability: {{Bird.prob}} % 
 									{% if messages.GeoSpatial_Filtering == 1 %}
-									| Geospatial occurance: {{Bird.occ}} / {{occ_tot}}
+										{% if messages.use_freq == 1 %}
+										| Geospatial frequency: {{ "%.1f"|format(Bird.occ / occ_tot * messages.checklists * 100)}} %
+										{% else %}
+										| Geospatial occurance: {{Bird.occ}} / {{occ_tot}}
+										{% endif %}
 									{% endif %}
 								<br/>
 							{% endfor %}

@@ -132,3 +132,15 @@ src/test_ebird.txt
 
 application/.well-known/
 src/Read_ebird.py
+application/static/Species_per_checklist_by_week.csv
+src/ebird_species_per_checklist.txt
+src/Checklists_dup.pkl
+src/Checklists.pkl
+src/Bird_taxon.pkl
+src/Geo_sampling.py
+src/Read_ebird.py
+src/Species_per_checklist_by_week.csv
+src/Bird_taxon.pkl
+src/Geo_sampling.py
+src/Read_ebird.py
+src/Bird_taxon.pkl

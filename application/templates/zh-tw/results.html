@@ -68,7 +68,12 @@
 								<h4>{{Bird.bird|replace("_"," ")}}</h4>
 								電腦分析有 {{Bird.prob}} % 是這隻鳥 <br/>
 									{% if messages.GeoSpatial_Filtering == 1 %}
-									地理分佈：{{Bird.occ}} 次 / {{occ_tot}} 筆全部紀錄
+										{% if messages.use_freq == 1 %}
+											鳥類觀察紀錄中 {{ "%.1f"|format(Bird.occ / occ_tot * messages.checklists * 100)}} % 有這種鳥
+										{% else %}
+											地理分佈：{{Bird.occ}} 次 / {{occ_tot}} 筆全部紀錄
+										{% endif %}
+									
 									{% endif %}
 								<br/>
 							{% endfor %}

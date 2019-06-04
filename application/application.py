@@ -55,6 +55,60 @@ def calc_poly(lat, lon, km=20):
 		lon-lon_deg_u, lat+lat_deg, lon-lon_deg_d, lat-lat_deg, 
 		lon+lon_deg_d, lat-lat_deg, lon+lon_deg_u, lat+lat_deg,
 		lon-lon_deg_u, lat+lat_deg,)
+
+def getRoundedThresholdv1(a, MinClip):
+    if a > 100:
+        a = a - 360
+    return round(a / MinClip) * MinClip
+
+def getWeekNumber(date):
+    return int(date.strftime("%V"))
+
+def getBirdsPerChecklist(lat, lon, week_this, bpc, degree=0.5):
+	# Will have problem when lat lon is close to -180 W
+	y1, x1 = getRoundedThresholdv1(lat+degree/2, degree), getRoundedThresholdv1(lon-degree/2, degree) #NW grid
+	y2, x2 = getRoundedThresholdv1(lat-degree/2, degree), getRoundedThresholdv1(lon-degree/2, degree) #SW grid
+	y3, x3 = getRoundedThresholdv1(lat-degree/2, degree), getRoundedThresholdv1(lon+degree/2, degree) #SE grid 
+	y4, x4 = getRoundedThresholdv1(lat+degree/2, degree), getRoundedThresholdv1(lon+degree/2, degree) #NE grid
+	y5, x5 = (y1+y2) / 2, (x1+x4) / 2 # Middle point
+	try: 
+		bpc1 = bpc[bpc['week_num2']==week_this][bpc['lat_round2']==y1][bpc['lon_round2']==x1]['SPECIES_COUNT'].values[0]
+	except:
+		bpc1 = -1
+	try:
+		bpc2 = bpc[bpc['week_num2']==week_this][bpc['lat_round2']==y2][bpc['lon_round2']==x2]['SPECIES_COUNT'].values[0]
+	except:
+		bpc2 = -1
+	try:
+		bpc3 = bpc[bpc['week_num2']==week_this][bpc['lat_round2']==y3][bpc['lon_round2']==x3]['SPECIES_COUNT'].values[0]
+	except:
+		bpc3 = -1
+	try:
+		bpc4 = bpc[bpc['week_num2']==week_this][bpc['lat_round2']==y4][bpc['lon_round2']==x4]['SPECIES_COUNT'].values[0]
+	except:
+		bpc4 = -1
+	print(bpc1, bpc2, bpc3, bpc4)
+	bpc_est = 0
+	bpc_area = 0
+	if bpc1 > 0:
+		bpc_est += (x5 - (lon-0.25)) * ((lat+0.25)-y5) * bpc1
+		bpc_area += (x5 - (lon-0.25)) * ((lat+0.25)-y5)
+	if bpc2 > 0:
+		bpc_est += (x5 - (lon-0.25)) * (y5 - (lat-0.25)) * bpc2
+		bpc_area += (x5 - (lon-0.25)) * (y5 - (lat-0.25))
+	if bpc3 > 0:
+		bpc_est += ((lon+0.25) - x5) * (y5 - (lat-0.25)) * bpc3
+		bpc_area += ((lon+0.25) - x5) * (y5 - (lat-0.25))
+	if bpc4 > 0:
+		bpc_est += ((lon+0.25) - x5) * ((lat+0.25)-y5) * bpc3
+		bpc_area += ((lon+0.25) - x5) * ((lat+0.25)-y5)
+	if bpc_est > 0:
+		bpc_est /= bpc_area
+		print("There are {:.3f} birds per checklist.".format(bpc_est))
+		return bpc_est
+	else:
+		print("Cannot estimate bpc")
+		return 0
 	
 
 def _request_taxon_occurence(taxon_key, x1, x2, poly):
@@ -227,12 +281,21 @@ def index():
 			probs = model.predict(data,verbose=1).flatten()
 			occ = {}
 			if GeoSpatial_Filtering:
-				
 				prob_idx = more_than_some_percent(probs).flatten()[np.isin(more_than_some_percent(probs).flatten(), topn_idx(probs, n=5))]
 				print(prob_idx)
 				print(probs[prob_idx])
 				x1, x2 = time_span(obs_date, span=7)
 				occ['total'] = json.loads(_request_occurrence(x1, x2, poly))['count']
+				try:
+					week_this = int(getWeekNumber(obs_date))
+					print(week_this)
+					messages['checklists'] = getBirdsPerChecklist(lat, lon, week_this, birds_per_checklist)
+					messages['use_freq'] = 1
+					print('Using Frequency')
+					print(messages['checklists'])
+				except:
+					messages['use_freq'] = 0
+					print('Not Using Frequency')
 				for idx, ii in enumerate(prob_idx):
 					# Gather geo-spatial info
 					Bird_this = Birds[int(class_indices_inv_map[ii])]
@@ -359,12 +422,21 @@ def zh_tw_index():
 			probs = model.predict(data,verbose=1).flatten()
 			occ = {}
 			if GeoSpatial_Filtering:
-				
 				prob_idx = more_than_some_percent(probs).flatten()[np.isin(more_than_some_percent(probs).flatten(), topn_idx(probs, n=5))]
 				print(prob_idx)
 				print(probs[prob_idx])
 				x1, x2 = time_span(obs_date, span=7)
 				occ['total'] = json.loads(_request_occurrence(x1, x2, poly))['count']
+				try:
+					week_this = int(getWeekNumber(obs_date))
+					print(week_this)
+					messages['checklists'] = getBirdsPerChecklist(lat, lon, week_this, birds_per_checklist)
+					messages['use_freq'] = 1
+					print('Using Frequency')
+				except:
+					messages['use_freq'] = 0
+					print('Not Using Frequency')
+
 				for idx, ii in enumerate(prob_idx):
 					# Gather geo-spatial info
 					Bird_this = Birds[int(class_indices_inv_map[ii])]
@@ -416,6 +488,7 @@ pkl_file = open('static/Bird_link.pkl', 'rb')
 Bird_link = pickle.load(pkl_file)
 pkl_file.close()
 bird_img = pd.read_csv('static/bird_img.csv')
+birds_per_checklist = pd.read_csv('static/Species_per_checklist_by_week.csv')
 # Bird_description = dict(zip(Bird_description2a,Bird_description2b))
 # print(type(Bird_description2))
 # print(Bird_description2)
