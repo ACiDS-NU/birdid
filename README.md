@@ -1,5 +1,5 @@
 # Plover Bird ID
-*To identify birds that we amateur bird watchers do not know.*
+*To identify birds that we amateur bird watchers and photographers do not know.*
 
 ## Background
 As an amateur bird photographer, the question I ask myself looking at a photo is, "What is this bird?" It turns out there are many people with the same issue. That's why I decided to construct a model to identify birds.
@@ -17,22 +17,24 @@ I did a little research, reading two papers on (1) [How the Merlin App was built
 [5]:https://github.com/shaneopatrick/lzbdr
 
 ## The NAbirds dataset and data preprocessing
-Here I am going to use the NAbirds dataset, which contains ~48k images with bounding boxes of 404 bird species, each with at least 100 images. The class is further divided into 555 "visual categories.\*" A visual category represents a form (e.g. breeding, (fe)male, juvenile, etc.) of the bird. The dataset also contains part annotations like where eyes, wings, legs, etc. are. I did not use these as it is quite unreasonable to ask the user to input the information.
+Here I am going to use the NAbirds dataset, which contains 48,562 images with bounding boxes of 404 bird species, each with at least 100 images. The class is further divided into 555 "visual categories.\*" A visual category represents a form (e.g. breeding, (fe)male, juvenile, etc.) of the bird. The dataset also contains part annotations like where eyes, wings, legs, etc. are. I did not use these as it is quite unreasonable to ask the user to input the information.
 
 \*The dataset, last I checked, contains 555 visual categories. It is unclear why on the website they said there are ~700 categories.
 
 Combining all information provided, we have an overview for each photo:
 
-(This figure and info will be available later)
+![Great Horned Owl in a bounding box][GHO_box] 
+
+[GHO_box]: figures/GHO_box.png "Great Horned Owl with bounding box"
 
 ### Class hierarchy
 One particular thing about the dataset is that the different visual categories are labeled with different class_id. Since some of these categories contain few images, I decided to combine all of them into a class that belongs to a species. 
 With the dataset a class_id hierarchy list is provided. For example, for Wood Ducks the list looks like this:
 
-  [314, 81] **Wood Duck (Breeding male)** belongs to **Wood Duck**
-  [613, 81] **Wood Duck (Female/Eclipse male)** belongs to **Wood Duck**
-  [81, 1] **Wood Duck** belongs to **Ducks, Geese, and Swans**
-  [1, 0] **Ducks, Geese, and Swans** belongs to **Birds**
+[314, 81] **Wood Duck (Breeding male)** belongs to **Wood Duck** <br/>
+[613, 81] **Wood Duck (Female/Eclipse male)** belongs to **Wood Duck**<br/>
+[81, 1] **Wood Duck** belongs to **Ducks, Geese, and Swans**<br/>
+[1, 0] **Ducks, Geese, and Swans** belongs to **Birds**<br/>
 
 Instead of having class_id 314 or 613, I want to combine them into class_id 81. Noticing the subspecies category all have parentheses associated with the class names, I stored the class_id at species level in a class_id_sp label. These will be the labels we try to fit our CNN model with.
 
