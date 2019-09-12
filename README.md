@@ -29,10 +29,10 @@ Combining all information provided, we have an overview for each photo:
 One particular thing about the dataset is that the different visual categories are labeled with different class_id. Since some of these categories contain few images, I decided to combine all of them into a class that belongs to a species. 
 With the dataset a class_id hierarchy list is provided. For example, for Wood Ducks the list looks like this:
 
-``[314, 81] **Wood Duck (Breeding male)** belongs to **Wood Duck**
-[613, 81] **Wood Duck (Female/Eclipse male)** belongs to **Wood Duck**
-[81, 1] **Wood Duck** belongs to **Ducks, Geese, and Swans**
-[1, 0] **Ducks, Geese, and Swans** belongs to **Birds**``
+  [314, 81] **Wood Duck (Breeding male)** belongs to **Wood Duck**
+  [613, 81] **Wood Duck (Female/Eclipse male)** belongs to **Wood Duck**
+  [81, 1] **Wood Duck** belongs to **Ducks, Geese, and Swans**
+  [1, 0] **Ducks, Geese, and Swans** belongs to **Birds**
 
 Instead of having class_id 314 or 613, I want to combine them into class_id 81. Noticing the subspecies category all have parentheses associated with the class names, I stored the class_id at species level in a class_id_sp label. These will be the labels we try to fit our CNN model with.
 
@@ -42,12 +42,14 @@ Image cropping is pretty simple. With cv2, I cropped the image based on the boun
 ## Training the CNN
 The entire cropped image set is uploaded to Google Drive and training done on Google Colab with GPU. I started with a MobileNet V2 model, added a 2D pooling and finally a softmax Dense layer as output.
 
-``base_model = tf.keras.applications.MobileNetV2(input_shape=IMG_SHAPE,
+```python
+base_model = tf.keras.applications.MobileNetV2(input_shape=IMG_SHAPE,
                                                include_top=False, 
                                                weights='imagenet')
 base_model.trainable = False
 global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
-prediction_layer = keras.layers.Dense(404,activation='softmax')``
+prediction_layer = keras.layers.Dense(404,activation='softmax')
+```
 
 The first 10 epochs are trained with the ``base_model`` as the feature extractor. The next 20 epochs are with the final 55 layers of the base_model trainable. The training resulted in undesirable overfitting - I guess one simply needs more data to resolve this. 
 
