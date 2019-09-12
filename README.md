@@ -21,11 +21,10 @@ Here I am going to use the NAbirds dataset, which contains 48,562 images with bo
 
 \*The dataset, last I checked, contains 555 visual categories. It is unclear why on the website they said there are ~700 categories.
 
-Combining all information provided, we have an overview for each photo:
+Combining all information provided, we have an overview for a photo:
 
-![Great Horned Owl in a bounding box][GHO_box] 
+<img src="figures/GHO_box.png" height="400"/>  
 
-[GHO_box]: figures/GHO_box.png "Great Horned Owl with bounding box"
 
 ### Class hierarchy
 One particular thing about the dataset is that the different visual categories are labeled with different class_id. Since some of these categories contain few images, I decided to combine all of them into a class that belongs to a species. 
@@ -40,6 +39,11 @@ Instead of having class_id 314 or 613, I want to combine them into class_id 81. 
 
 ### Image cropping
 Image cropping is pretty simple. With cv2, I cropped the image based on the bounding box info. If the box is not square, I padded black sides. These images are saved as 400 \* 400 pixel images in directories named after class_id_sp. I randomly assigned these files to test, val, and test folders. I think this step can be optimized in the future.
+
+Original image                     |  Cropped image
+:-------------------------:|:-------------------------:
+<img src="figures/GHO_box.png" height="400"/>  |   <img src="figures/GHO_cropped.png" height="400"/>  
+
 
 ## Training the CNN
 The entire cropped image set is uploaded to Google Drive and training done on Google Colab with GPU. I started with a MobileNet V2 model, added a 2D pooling and finally a softmax Dense layer as output.
