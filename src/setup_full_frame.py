@@ -338,12 +338,13 @@ if __name__ == '__main__':
     
     #%%
 if __name__ == '__main__':
-    for i in np.arange(402,10000,2000):
+#    for i in np.arange(402,10000,2000):
+    for i in [9382]:
         print(i)
         z = full_frame.iloc[i]
         print(z['class_name_sp'])
-        
-        img = '../../images/' + z['image_name']
+        print(z['image_name'])
+        img = '../nabirds/nabirds/images/' + z['image_name']
     #            print(img)
     #            plt.imshow(img)
         image = cv2.imread(img)
@@ -352,7 +353,7 @@ if __name__ == '__main__':
         
                        
 #        print(by0, by1, bx0, bx1)
-        fig,ax = plt.subplots(1, figsize=(20,20))
+        fig,ax = plt.subplots(1, figsize=(12,16))
         #image = plt.imread(img)
 #        plt.imshow(cv2.cvtColor(image[by0:by1,bx0:bx1], cv2.COLOR_BGR2RGB))
         plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -360,8 +361,10 @@ if __name__ == '__main__':
         ax.add_patch(rect)
         #rect2 = patches.Rectangle((bx0,by0),nbsl,nbsl,linewidth=1,edgecolor='b',facecolor='none')
         #ax.add_patch(rect2)
-        
+        plt.savefig('GHO_box.png')
         plt.show()
+        
+        
         
 #%%
  for i in np.arange(402,6000,2000):

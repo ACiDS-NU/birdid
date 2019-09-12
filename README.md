@@ -17,13 +17,11 @@ I did a little research, reading two papers on (1) [How the Merlin App was built
 [5]:https://github.com/shaneopatrick/lzbdr
 
 ## The NAbirds dataset and data preprocessing
-Here I am going to use the NAbirds dataset, which contains 48,562 images with bounding boxes of 404 bird species, each with at least 100 images. The class is further divided into 555 "visual categories.\*" A visual category represents a form (e.g. breeding, (fe)male, juvenile, etc.) of the bird. The dataset also contains part annotations like where eyes, wings, legs, etc. are. I did not use these as it is quite unreasonable to ask the user to input the information.
-
-\*The dataset, last I checked, contains 555 visual categories. It is unclear why on the website they said there are ~700 categories.
+Here I am going to use the NAbirds dataset, which contains 48,562 images with bounding boxes of 404 bird species, each with at least 100 images. The class is further divided into 555 "visual categories.[^1]" A visual category represents a form (e.g. breeding, (fe)male, juvenile, etc.) of the bird. The dataset also contains part annotations like where eyes, wings, legs, etc. are. I did not use these as it is quite unreasonable to ask the user to input the information.
 
 Combining all information provided, we have an overview for a photo:
 
-<img src="figures/GHO_box.png" height="400"/>  |
+<img src="figures/GHO_box.png" height="400"/>
 
 ```plain
 image_id                      00903263-7ea9-49bd-8c4e-934ab87006ee
@@ -59,7 +57,7 @@ Image cropping is pretty simple. With cv2, I cropped the image based on the boun
 
 Original image                     |  Cropped image
 :-------------------------:|:-------------------------:
-<img src="figures/GHO_box.png" height="400"/>  |   <img src="figures/GHO_cropped.jpg" height="400"/>  
+<img src="figures/GHO_box.png" height="400"/>  |   <img src="figures/GHO_cropped.jpg" height="300"/>  
 
 
 ## Training the CNN
@@ -75,6 +73,8 @@ prediction_layer = keras.layers.Dense(404,activation='softmax')
 ```
 
 The first 10 epochs are trained with the ``base_model`` as the feature extractor. The next 20 epochs are with the final 55 layers of the base_model trainable. The training resulted in undesirable overfitting - I guess one simply needs more data to resolve this. 
+
+<img src="figures/Training.png" height="400"/> 
 
 The images are not loaded into the memory (I don't have enough). Instead it is generated through ``keras.preprocessing.image.ImageDataGenerator()`` and ``keras.preprocessing.image.flow_from_directory()``. I wanted to note that if the tar ball is extracted to the root of Google Colab instance, the data processing is much faster.
 
@@ -104,6 +104,4 @@ I was to use the Allaboutbirds text (from Cornell) but I think there will be cop
    Many people have bird feeders, but what bird visits when you're not watching it? Is there a way to set up a camera and just let it identify and classify birds while you're at work / school / etc.?
 
 
-
-
-
+[^1]: The dataset, last I checked, contains 555 visual categories. It is unclear why on the website they said there are ~700 categories.
