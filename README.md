@@ -23,7 +23,24 @@ Here I am going to use the NAbirds dataset, which contains 48,562 images with bo
 
 Combining all information provided, we have an overview for a photo:
 
-<img src="figures/GHO_box.png" height="400"/>  
+<img src="figures/GHO_box.png" height="400"/>  |
+
+```plain
+image_id                      00903263-7ea9-49bd-8c4e-934ab87006ee
+image_name               0539/009032637ea949bd8c4e934ab87006ee.jpg
+bb_x                                                           164
+bb_y                                                           163
+bb_width                                                       210
+bb_height                                                      441
+class_id                                                       539
+photographer                                           Ryan_Schain
+class_name                                        Great_Horned_Owl
+image_file                00903263-7ea9-49bd-8c4e-934ab87006ee.png
+class_id_sp                                                    539
+class_name_sp                                     Great_Horned_Owl
+image_name_sp            0539/009032637ea949bd8c4e934ab87006ee.jpg
+image_name_fname_only         009032637ea949bd8c4e934ab87006ee.jpg
+```
 
 
 ### Class hierarchy
@@ -42,7 +59,7 @@ Image cropping is pretty simple. With cv2, I cropped the image based on the boun
 
 Original image                     |  Cropped image
 :-------------------------:|:-------------------------:
-<img src="figures/GHO_box.png" height="400"/>  |   <img src="figures/GHO_cropped.png" height="400"/>  
+<img src="figures/GHO_box.png" height="400"/>  |   <img src="figures/GHO_cropped.jpg" height="400"/>  
 
 
 ## Training the CNN
