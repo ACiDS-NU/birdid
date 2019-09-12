@@ -91,7 +91,7 @@ for name, sci_name in Bird_sci_name.items():
         time.sleep(0.3)        
 #%%
 Bird_taxon['Vermilion_Flycatcher'] = 2483647
-Bird_taxon['Northern_Pygmy_Owl'] = 9616953
+Bird_taxon['Northern_Pygmy-Owl'] = 9616953
 Bird_taxon['Hairy_Woodpecker'] = 9149595 
 # 9149595 is actually the taxon for Downy Woodpecker, 
 # but in GBIF EOD Hairy is classified as unknown species so I had no choice.
@@ -116,6 +116,12 @@ for name, taxon in Bird_taxon.items():
 f = open("Bird_taxon.pkl","wb")
 pickle.dump(Bird_taxon,f)
 f.close()
+#%%
+f = open("Bird_taxon.pkl","rb")
+Bird_taxon = pickle.load(f)
+f.close()
+#%%
+Bird_taxon['Red-winged_Blackbird'] = 9409198
 #%%
 Bird_this = Bird_sci_name['Blackburnian_Warbler'].replace(" ","%20")
 taxon_this = json.loads(_request_taxon_key(name=Bird_this))['results'][0]['nubKey']

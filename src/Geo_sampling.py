@@ -60,7 +60,10 @@ USA_HI_east = -154
 USA_HI_west = -161
 USA_HI_north = 23
 USA_HI_south = 18.5
-
+USA_west = -190
+USA_east = -66
+USA_south = 18.5
+USA_north = 72
 all_lat_pts = []
 all_lon_pts = []
 lat_pts, lon_pts = lat_lon_pts(USA_48_east, USA_48_west, USA_48_north, USA_48_south, grid = 1)
