@@ -17,7 +17,7 @@ I did a little research, reading two papers on (1) [How the Merlin App was built
 [5]:https://github.com/shaneopatrick/lzbdr
 
 ## The NAbirds dataset and data preprocessing
-Here I am going to use the NAbirds dataset, which contains 48,562 images with bounding boxes of 404 bird species, each with at least 100 images. The class is further divided into 555 "visual categories.[^1]" A visual category represents a form (e.g. breeding, (fe)male, juvenile, etc.) of the bird. The dataset also contains part annotations like where eyes, wings, legs, etc. are. I did not use these as it is quite unreasonable to ask the user to input the information.
+Here I am going to use the NAbirds dataset, which contains 48,562 images with bounding boxes of 404 bird species, each with at least 100 images. The class is further divided into 555 "visual categories." A visual category represents a form (e.g. breeding, (fe)male, juvenile, etc.) of the bird. The dataset also contains part annotations like where eyes, wings, legs, etc. are. I did not use these as it is quite unreasonable to ask the user to input the information.
 
 Combining all information provided, we have an overview for a photo:
 
@@ -81,7 +81,9 @@ The images are not loaded into the memory (I don't have enough). Instead it is g
 At the end of the training, I got 66 % top-1, 84 % top-3, and 89 % top-5 accuracy. The fact that there is a big increase in top-3 accuracy indicates similar species are selected. At this point it might be better to filter the results through the geological and temporal information. 
 
 ## Building the Plover website
-Returning to the goal, build a web app for bird IDing with cropping and geospatial refinement. I used the Flask framework and hosted the website on Amazon Elastic Beanstalk. 
+Returning to the goal, build a web app for bird IDing with cropping and geospatial refinement. I used the Flask framework and hosted the website on Amazon Elastic Beanstalk. The template is based on [Spatial][9].
+
+[9]:https://templated.co/spatial
 
 ### Cropping 
 To enable the drag-cropping feature, a small piece of Javascript ([imgareaselect][6]) is included. To enable mobile users to also crop the image, touch events are mapped to click events. One thing to improve might be to resize (based on the cropped area) before uploading the image, as it might take a while depending on the internet speed.
@@ -104,4 +106,3 @@ I was to use the Allaboutbirds text (from Cornell) but I think there will be cop
    Many people have bird feeders, but what bird visits when you're not watching it? Is there a way to set up a camera and just let it identify and classify birds while you're at work / school / etc.?
 
 
-[^1]: The dataset, last I checked, contains 555 visual categories. It is unclear why on the website they said there are ~700 categories.
