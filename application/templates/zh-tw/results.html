@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Plover - 鳥類影像辨識系統</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+		<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/template.css') }}">		 -->
+		<style type="text/css">
+			#candidates p {
+		  		overflow: hidden;
+		  		display: -webkit-box;
+		  		-webkit-line-clamp: 4;
+		  		-webkit-box-orient: vertical;
+		  		margin: 0.0em 0em 0.0em 0em;
+			}
+			#candidates h4 {
+				margin: 0.0em 0em 1em 0em;
+			}
+			#candidates a {
+				margin-top: 0.5em;
+			}
+			#predictions h4 {
+				margin: 2em 0em 0em 0em;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<h1><strong><a href="{{ url_for('zh_tw_index') }}">Plover</a></strong></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="{{ url_for('index') }}">English</a></li>
+						<li><a href="{{ url_for('zh_tw_index') }}">首頁</a></li>
+						<li><a href="{{ url_for('zh_tw_about') }}">關於</a></li>
+						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+
+		<!-- Main -->
+			<section id="predictions" class="wrapper style2 special" style="padding: 4em 0em 3em 0em;">
+				<div class="container">
+					<div class="row 150%">
+						<div class="6u 12u$(xsmall)">
+								<h2>您的照片：</h2>
+								<img id="image" src="{{ url_for('uploaded_file', filename=filename) }}" style="max-width:70%; max-height: 400px;" />
+
+						
+						</div>
+						<div class="6u 12u$(small)">
+							<h2>我們的預測：</h2>
+							{% if num_birds == 0 %}
+								<p>不好意思，在您提供的日期與地區沒有符合條件的鳥類。</p>
+							{% endif %}
+							{% for Bird in Bird_candidates %}
+								<h4>{{Bird.bird|replace("_"," ")}}</h4>
+								電腦分析有 {{Bird.prob}} % 是這隻鳥 <br/>
+									{% if messages.GeoSpatial_Filtering == 1 %}
+										{% if messages.use_freq == 1 %}
+											鳥類觀察紀錄中 {{ "%.1f"|format(Bird.occ / occ_tot * messages.checklists * 100)}} % 有這種鳥
+										{% else %}
+											地理分佈：{{Bird.occ}} 次 / {{occ_tot}} 筆全部紀錄
+										{% endif %}
+									
+									{% endif %}
+								<br/>
+							{% endfor %}
+							
+							
+							{% if messages.GeoSpatial_Filtering == 0 %}
+							<br/>本次辨識並未以地理分佈篩選鳥種，因為
+								{% if messages.lat_lon_default == 1 %}
+								我們不知道您拍到這隻鳥的位置
+								{% endif %}
+								{% if messages.obs_date_default * messages.lat_lon_default == 1 %}
+								，而且
+								{% else %}
+								。
+								{% endif %}
+								{% if messages.obs_date_default == 1 %}
+								我們不知道您拍到這隻鳥的日期。
+								{% endif %}
+							{% else %}
+								<br/>本次辨識以下列資訊篩選鳥種：<br/>
+								拍攝日期：{{messages.obs_date}} <br/>
+								拍攝位置：{{messages.location}} <br/>
+								座標： ({{messages.lat}}, {{messages.lon}})
+							{% endif %}
+
+							<br/><br/><a href="{{ url_for('zh_tw_index')}}">換一張照片再試一次吧！</a>
+
+						</div>
+					</div>
+				</div>
+			</section>
+			<section id="candidates" class="wrapper style2 special" style="padding: 2em 0em 1em 0em;">
+				<div class="container">
+					{% for Bird in Bird_candidates %}
+					<div class="row 150%" id="bird1" style="padding: 2em 0em 1em 0em;">
+						<div class="6u 12u$(xsmall)" style="text-align: right;">
+							<h4>{{Bird.bird|replace("_"," ")}}</h4>
+							{{Bird.description}}
+							<a href={{Bird.bird_link}} target="_blank">英文維基百科</a> | 
+							<a href="https://www.allaboutbirds.org/guide/{{Bird.bird}}" target="_blank">北美 All About Birds 網站</a>
+						</div>
+						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
+							<figure style="max-width: 60%;">
+								<img id="Bird{{ii}}_img" src="{{ Bird.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
+								<figcaption><em>&copy; {{Bird.photographer|replace("_"," ")}}</em></figcaption>
+							</figure>
+
+						</div>
+					</div>
+					{% endfor %}
+					
+					<div align="center" style="margin-top: 1em;">
+						<a href="{{ url_for('zh_tw_index')}}">換一張照片再試一次</a>
+					</div>
+				</div>
+			</section>
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="icons">
+						<li><a href="https://github.com/darrenjhsu/birdid" class="icon fa-github" target="_blank"></a></li>
+						<li><a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" class="icon fa-linkedin" target="_blank"></a></li>
+						<li><a href="https://www.flickr.com/photos/darren8221/" class="icon fa-flickr" target="_blank"></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; The Piping Plover</li>
+						<li>版面設計：<a href="http://templated.co" target="_blank">TEMPLATED</a></li>
+						<li>聯絡我們：contact@plover-birdid.com</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+<!-- 			<script type="text/javascript">
+				//You can then call the function with something like what i have below.
+				document.querySelector('p').innerText = truncateText('p', 107);
+			</script> -->
+			
+			<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
+	</body>
+</html>

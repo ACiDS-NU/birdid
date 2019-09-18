@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Plover -鳥類影像辨識系統</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+	</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<h1><strong><a href="{{ url_for('zh_tw_index') }}">Plover</a></strong></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="{{ url_for('index') }}">English</a></li>
+						<li><a href="{{ url_for('zh_tw_index') }}">首頁</a></li>
+						<li><a href="{{ url_for('zh_tw_about') }}">關於</a></li>
+						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+		<!-- Main -->
+			<section data-role="none" id="main" class="wrapper">
+				<div class="container">
+
+					<header class="major special">
+						<h2>Plover</h2>
+						<p>為賞鳥新手打造的影像辨識系統！</p>
+					</header>
+
+					<a class="image fit" href="https://www.flickr.com/photos/darren8221/45018454145" target="_blank" style="margin-bottom: 0em;"><img src="{{url_for('static', filename='images/pic01.jpg')}}" alt="" /></a>
+					<p align="right">沙丘鶴 (Sandhill Cranes) 在傍晚飛回棲地，攝於 Jasper-Pulaski FWA, 美國印地安納州。 &copy; D. Hsu</p>
+					<h3>緣起</h3>
+					<p>一開始為了去黃石國家公園拍動物，買了一管 Sigma 150-600mm 長鏡頭，發現拍鳥很好玩，就開始拍鳥了。
+					因為還是拍鳥的新手，常常認不出來拍到的是什麼鳥。雖然 Cornell 鳥類實驗室出了 Merlin 這個神一般的 app（功能跟這個網站很像），為了練習 coding 跟多認識一些鳥，還是決定來做這個 web app 好了 XD</p>
+					<h3>運作原理</h3>
+					<p>這個網站使用了卷積神經網路 (Convolutional Neural Network, CNN)。CNN 是一種非常適合用來處理圖像辨識的架構。這個 CNN 的原始參數是從 MobileNetV2 來的，我一開始用 feature extractor 模式訓練了 10 回合 (epochs)，接著再在 fine-tuning 模式訓練了 20 回合。這裡使用的資料集是 NAbirds, 包含 404 種鳥共 48,352 張圖片的資料。訓練是用 Tensorflow 2.0 package, 在 Google Colab 這個平台上進行的。原始碼我都放在 <a href="https://github.com/darrenjhsu/birdid" target="_blank">GitHub</a> 上了，有興趣的朋友可以自行參閱。</p>
+					<p>另一部分，如果您提供了拍攝日期和地點的資訊，在辨識時我們另外會即時參考 Global Biodiversity Information Facility - eBird Observation Dataset (<a href="https://www.gbif.org/dataset/4fa7b334-ce0d-4e88-aaae-2e0c138d049e" target="_blank">GBIF - EOD</a>) 的資料來篩選可能的結果（也就是為什麼上傳後要等比較久一點）。有些鳥長得實在很像（像是西方／東方草地鷚 Western / Eastern Meadowlark），只能用地理分佈來篩選。在結果頁面上看到的地理分佈回傳值，是這隻鳥被人們紀錄到的頻率。</p>
+					<h3>NAbird 資料集</h3>
+					<p><a href="http://dl.allaboutbirds.org/nabirds" target="_blank">這個資料集</a>是由 Cornell Lab of Ornithology 蒐集並發布的，裡面包含 48,352 張圖片，橫跨 404 種北美常見的鳥種，以及一共 555 種型態。我把他們拆成 36k/6k/6k train/validation/test. 資料集另外有提供鳥類在每張圖的位置，我用來裁圖並且加上黑邊讓每張圖都是方形的。 </p>
+					<h3>這個網站</h3>
+					<p>這個網站使用 Flask 為底，架在 Amazon Elastic Beanstalk 服務上。版面是從 <a href="https://templated.co/spatial" target="_blank">Spatial</a> 改來的. 這個網站叫 Plover 是因為，您在進入本網站時看到的底圖就是一隻可愛的 Piping Plover, 他們是亟待保育的物種。我使用了 BeautifulSoup 來抓 Wikipedia 上各鳥種的簡介。這個網站的原形是 <a href="http://www.lazybirder.com/" target="_blank">Lazybirder</a>，用來查詢您輸入地點的服務則是由 <a href="https://nominatim.openstreetmap.org/" target="_blank">Nominatim</a> 提供。 </p>
+					<h3>感謝這群人</h3>
+					<p>這個點子能實現，要感謝西北大學的 Academic Career in Data Science (<a href="https://sites.northwestern.edu/acids/" target="_blank">ACiDS</a>) 這個學生組織。Kit (@<a href="https://wingkitlee0.github.io/" target="_blank">wingkitlee0</a>) 有天跟我說他對這個計畫很有興趣，讓我有實作的動力。另外 Jordan (@<a href="https://github.com/monadnoc" target="_blank">monadnoc</a>), Matt (@<a href="https://github.com/kirschner21" target="_blank">kirschner21</a>), 還有 Denis (@<a href="https://github.com/dleshchev" target="_blank">dleshchev</a>) 都對 ACiDS 的運作和咖啡補給有相當大的貢獻。 </p>
+					</p>
+					<h3>開發中的功能</h3>
+					<p>
+					1. FeederWatch Auto! 自動辨識來鳥類餵食器的都是什麼鳥。<br/>
+					2. 把這個辨識系統延伸到台灣的鳥類。
+					</p>
+					<h4>我哪位？</h4>
+					<p>我是 Darren Hsu (@<a href="https://github.com/darrenjhsu" target="_blank">darrenjhsu</a>, <a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" target="_blank">LinkedIn</a>). 賞鳥初心者，兼職飛羽攝影。在西北大學念化學博班，因為太常做資料分析，乾脆來做這個網站。</p>
+
+				</div>
+			</section>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="icons">
+						<li><a href="https://github.com/darrenjhsu/birdid" class="icon fa-github" target="_blank"></a></li>
+						<li><a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" class="icon fa-linkedin" target="_blank"></a></li>
+						<li><a href="https://www.flickr.com/photos/darren8221/" class="icon fa-flickr" target="_blank"></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; The Piping Plover</li>
+						<li>版面設計：<a href="http://templated.co" target="_blank">TEMPLATED</a></li>
+						<li>聯絡我們：contact@plover-birdid.com</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+	</body>
+</html>

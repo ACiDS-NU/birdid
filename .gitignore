@@ -102,3 +102,45 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Flask website
+application/.elasticbeanstalk/*
+!application/.elasticbeanstalk/*.cfg.yml
+!application/.elasticbeanstalk/*.global.yml
+application/.gitignore
+application/virt
+application/Build_intro.py
+application/main.py
+application/upload
+application/templates/about2.html
+application/static/*.h5
+application/static/*.pkl
+
+
+# nabirds dataset
+nabirds
+
+# big src files
+src/Bird_description*
+src/web_images
+# img files
+bird_img*
+
+src/ebd_US-AL-101_201801_201801_relMay-2018.txt
+
+src/test_ebird.txt
+
+application/.well-known/
+src/Read_ebird.py
+application/static/Species_per_checklist_by_week.csv
+src/ebird_species_per_checklist.txt
+src/Checklists_dup.pkl
+src/Checklists.pkl
+src/Bird_taxon.pkl
+src/Geo_sampling.py
+src/Read_ebird.py
+src/Species_per_checklist_by_week.csv
+src/Bird_taxon.pkl
+src/Geo_sampling.py
+src/Read_ebird.py
+src/Bird_taxon.pkl

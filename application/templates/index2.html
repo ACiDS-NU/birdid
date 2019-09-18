@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Plover - A Bird IDing web app</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- <link rel="stylesheet" type="text/css" href="static/css/jquery.mobile-1.4.5.css" /> -->
+		<link rel="stylesheet" href="static/css/main.css" />
+		<link rel="stylesheet" type="text/css" href="static/css/imgareaselect-default.css" />
+		<!-- <script type="text/javascript" src="static/scripts/jquery.min.js"></script> -->
+		<script src="http://code.jquery.com/jquery-2.1.3.js"></script>
+		<!-- <script type="text/javascript" src="static/scripts/jquery.mobile-1.4.5.js"></script> -->
+		<!-- <script type="text/javascript" src="static/scripts/jquery.imgareaselect_touch2.js"></script> -->
+		<script type="text/javascript" src="static/scripts/jquery.imgareaselect.js"></script>
+	</head>
+	<body class="landing">
+
+		<!-- Header -->
+			<header id="header" class="alt" data-role="none" >
+				<h1><strong><a href="{{ url_for('index') }}">Plover</a></strong></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="{{ url_for('index') }}">Home</a></li>
+						<li><a href="{{ url_for('about') }}">About</a></li>
+						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+
+		<!-- Banner -->
+			<section id="banner" data-role="none" >
+				<h2>Plover</h2>
+				<p>A simple bird identification web app for<br /> new and intermediate birders.</p>
+				<ul class="actions">
+					<li><a href="#GetStarted" class="button special big">Get Started</a></li>
+				</ul>
+			</section>
+
+			<!-- One -->
+				<section data-role="none" id="GetStarted" class="wrapper style1" style="padding: 3em 0em 0.5em 0em;">
+					<div class="container 75%">
+						<div class="row 200%">
+							<div class="6u 12u$(medium)">
+								<header class="major">
+									<h2>Get started</h2>
+									<p>Upload. Crop. Identify. <br/> It's that simple!</p>
+								</header>
+							</div>
+							<div class="6u$ 12u$(medium)">
+								<p>A convolutional neural network trained with the NAbird dataset from Cornell Lab of Ornithology, this app can now identify over 400 species that are regularly seen in the North America. Try it with your photo!</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Two -->
+            	<section data-role="none" id="upload" class="wrapper style1 special" style="padding: 1.5em 0em 0.5em 0em;">
+					<div class="container">
+						<header class="major" style="margin-bottom: 0.5em">
+							<h2>Upload your photo</h2>
+							<p>then drag to crop out the bird.</p>
+						</header>
+							<p>(Mobile users, the cropping feature will come soon! Results may not be accurate.)</p>
+                        	<form method=post enctype=multipart/form-data>
+                                <input type="file" id="file" name="file" align="center" />
+                                <br/>
+                                <img id="bird_image" width="60%" align="center" style="margin-top: 0.5em" />
+                                <br/>
+                                <input type="hidden" name="x1" value="" />
+                                <input type="hidden" name="y1" value="" />
+                                <input type="hidden" name="x2" value="" />
+                                <input type="hidden" name="y2" value="" />
+                                <input type="hidden" name="w" value="" />
+                                <input type="hidden" name="h" value="" />
+                                <br/>
+                                <input class="button special big" type=submit value=Upload>
+                             </form>
+					</div>
+				</section>
+				
+
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="icons">
+						<li><a href="https://github.com/darrenjhsu/birdid" class="icon fa-github" target="_blank"></a></li>
+						<li><a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" class="icon fa-linkedin" target="_blank"></a></li>
+						<li><a href="https://www.flickr.com/photos/darren8221/" class="icon fa-flickr" target="_blank"></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; The Piping Plover</li>
+						<li>Design: <a href="http://templated.co">TEMPLATED</a></li>
+						<li>Contact: contact@plover-birdid.com</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<!-- <script src="static/js/jquery.min.js"></script> -->
+			<script src="static/js/skel.min.js"></script>
+			<script src="static/js/util.js"></script>
+			<script src="static/js/main.js"></script>
+			
+			<script type="text/javascript">
+				document.getElementById("file").onchange = function () {
+					var reader = new FileReader();
+
+					reader.onload = function (e) {
+						// get loaded data and render thumbnail.
+						document.getElementById("bird_image").src = e.target.result;
+
+					};
+
+					// read the image file as a data URL.
+					reader.readAsDataURL(this.files[0]);
+				};
+				
+				$(function () {
+					$('#bird_image').imgAreaSelect({ 
+						// aspectRatio: '1:1', 
+						handles: true,
+						onSelectEnd: function (img, selection) {
+							$('input[name="x1"]').val(selection.x1);
+							$('input[name="y1"]').val(selection.y1);
+							$('input[name="x2"]').val(selection.x2);
+							$('input[name="y2"]').val(selection.y2);
+							$('input[name="w"]').val(img.width);
+							$('input[name="h"]').val(img.height);
+						}
+					});
+				});
+
+				// $(function(){
+				// 	$('#bird_image').bind('touchstart', function(event){
+				// 		oldXPos = event.originalEvent.targetTouches[0].pageX;
+				// 		// $('body').bind('touchmove', function(e){e.preventDefault()});
+				// 	});
+				// });
+			</script>
+			<script type="text/javascript">
+				$(function () {
+				   	document.getElementById("bird_image").addEventListener("touchstart", touchHandler, true);
+			    	document.getElementById("bird_image").addEventListener("touchmove", touchHandler, true);
+			    	document.getElementById("bird_image").addEventListener("touchend", touchHandler, true);
+			    	document.getElementById("bird_image").addEventListener("touchcancel", touchHandler, true);
+			    	// document.getElementById("bird_image").myprefixNoScroll=1;
+				})
+				function touchHandler(event)
+				{
+					var touches = event.changedTouches,
+					first = touches[0],
+					type = "";
+					switch(event.type)
+					{
+						case "touchstart": type = "mousedown"; break;
+						case "touchmove":  type = "mousemove"; break;        
+						case "touchend":   type = "mouseup";   break;
+						default:           return;
+					}
+
+				    // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+				    //                screenX, screenY, clientX, clientY, ctrlKey, 
+				    //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+				    var simulatedEvent = document.createEvent("MouseEvent");
+				    simulatedEvent.initMouseEvent(type, true, true, window, 1, 
+				    	first.screenX, first.screenY, 
+				    	first.clientX, first.clientY, false, 
+				    	false, false, false, 0/*left*/, null);
+
+				    first.target.dispatchEvent(simulatedEvent);
+				    // if (first.target.myPrefixNoScrolling) event.preventDefault();
+				    event.preventDefault();
+				}
+
+			</script>
+
+
+	</body>
+</html>

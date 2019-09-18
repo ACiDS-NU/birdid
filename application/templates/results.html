@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Plover - A Bird IDing web app</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+		<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/template.css') }}">		 -->
+		<style type="text/css">
+			#candidates p {
+		  		overflow: hidden;
+		  		display: -webkit-box;
+		  		-webkit-line-clamp: 4;
+		  		-webkit-box-orient: vertical;
+		  		margin: 0.0em 0em 0.0em 0em;
+			}
+			#candidates h4 {
+				margin: 0.0em 0em 1em 0em;
+			}
+			#candidates a {
+				margin-top: 0.5em;
+			}
+			#predictions h4 {
+				margin: 2em 0em 0em 0em;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<h1><strong><a href="{{ url_for('index') }}">Plover</a></strong></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="{{ url_for('zh_tw_index') }}">繁體中文</a></li>
+						<li><a href="{{ url_for('index') }}">Home</a></li>
+						<li><a href="{{ url_for('about') }}">About</a></li>
+						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+
+		<!-- Main -->
+			<section id="predictions" class="wrapper style2 special" style="padding: 4em 0em 3em 0em;">
+				<div class="container">
+					<div class="row 150%">
+						<div class="6u 12u$(xsmall)">
+								<h2>Your upload</h2>
+								<img id="image" src="{{ url_for('uploaded_file', filename=filename) }}" style="max-width:70%; max-height: 400px;" />
+
+						
+						</div>
+						<div class="6u 12u$(small)">
+							<h2>Our predictions</h2>
+							{% if num_birds == 0 %}
+								<p>Sorry, there is no candidate birds at this location for this period of time</p>
+							{% endif %}
+							{% for Bird in Bird_candidates %}
+								<h4>{{Bird.bird|replace("_"," ")}}</h4>
+								Visual probability: {{Bird.prob}} % 
+									{% if messages.GeoSpatial_Filtering == 1 %}
+										{% if messages.use_freq == 1 %}
+										| Geospatial frequency: {{ "%.1f"|format(Bird.occ / occ_tot * messages.checklists * 100)}} %
+										{% else %}
+										| Geospatial occurance: {{Bird.occ}} / {{occ_tot}}
+										{% endif %}
+									{% endif %}
+								<br/>
+							{% endfor %}
+							
+							
+							{% if messages.GeoSpatial_Filtering == 0 %}
+							<br/>Did not perform geospatial filtering because: 
+								{% if messages.lat_lon_default == 1 %}
+								Geolocation is not set. 
+								{% endif %}
+								{% if messages.obs_date_default == 1 %}
+								Date is not set.
+								{% endif %}
+							{% else %}
+								<br/>Performed geospatial filtering: <br/>
+								Observation date: {{messages.obs_date}} <br/>
+								Location: {{messages.location}} <br/>
+								Coordinates: ({{messages.lat}}, {{messages.lon}})
+							{% endif %}
+
+							<br/><br/><a href="{{ url_for('index')}}">Go back and try another photo!</a>
+
+						</div>
+					</div>
+				</div>
+			</section>
+			<section id="candidates" class="wrapper style2 special" style="padding: 2em 0em 1em 0em;">
+				<div class="container">
+					{% for Bird in Bird_candidates %}
+					<div class="row 150%" id="bird1" style="padding: 2em 0em 1em 0em;">
+						<div class="6u 12u$(xsmall)" style="text-align: right;">
+							<h4>{{Bird.bird|replace("_"," ")}}</h4>
+							{{Bird.description}}
+							<a href={{Bird.bird_link}} target="_blank">Full text at Wikipedia</a> | 
+							<a href="https://www.allaboutbirds.org/guide/{{Bird.bird}}" target="_blank">Read more at All About Birds</a>
+						</div>
+						<div class="6u 12u$(xsmall)" style="padding: 0em 0em 1em 2.25em;">
+							<figure style="max-width: 60%;">
+								<img id="Bird{{ii}}_img" src="{{ Bird.image }}" style="max-width: 100%; max-height: 250px;" align="middle" /><br/>
+								<figcaption><em>&copy; {{Bird.photographer|replace("_"," ")}}</em></figcaption>
+							</figure>
+
+						</div>
+					</div>
+					{% endfor %}
+					
+					<div align="center" style="margin-top: 1em;">
+						<a href="{{ url_for('index')}}">Go back and try another photo!</a>
+					</div>
+				</div>
+			</section>
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="icons">
+						<li><a href="https://github.com/darrenjhsu/birdid" class="icon fa-github" target="_blank"></a></li>
+						<li><a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" class="icon fa-linkedin" target="_blank"></a></li>
+						<li><a href="https://www.flickr.com/photos/darren8221/" class="icon fa-flickr" target="_blank"></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; The Piping Plover</li>
+						<li>Design: <a href="http://templated.co" target="_blank">TEMPLATED</a></li>
+						<li>Contact: contact@plover-birdid.com</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+<!-- 			<script type="text/javascript">
+				//You can then call the function with something like what i have below.
+				document.querySelector('p').innerText = truncateText('p', 107);
+			</script> -->
+			
+			<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
+	</body>
+</html>
