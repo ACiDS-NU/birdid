@@ -154,4 +154,4 @@ src/Get_feeder_birds_per_state_per_month.py
 src/Species_per_checklist_by_week_state_county.csv
 src/Species_per_checklist_by_week_state_county_dup.csv
 src/Read_ebird.py
-src/Read_ebird.py
+*.DS_Store

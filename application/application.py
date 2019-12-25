@@ -27,8 +27,8 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 img_root = 'https://s3.us-east-2.amazonaws.com/plover-birdid/bird_img/'
 #Find_taxon_occurrence = "http://api.gbif.org/v1/occurrence/search?country=US&dataset_key=4fa7b334-ce0d-4e88-aaae-2e0c138d049e&has_coordinate=true&has_geospatial_issue=false&taxon_key={TAXON_KEY}&event_date={X1},{X2}&event_date={X3},{X4}&event_date={X5},{X6}&geometry={GEOMETRY}&limit=0"
 #Find_occurrence = "http://api.gbif.org/v1/occurrence/search?country=US&dataset_key=4fa7b334-ce0d-4e88-aaae-2e0c138d049e&has_coordinate=true&has_geospatial_issue=false&event_date={X1},{X2}&event_date={X3},{X4}&event_date={X5},{X6}&geometry={GEOMETRY}&limit=0"
-Find_taxon_occurrence = "http://api.gbif.org/v1/occurrence/search?country=US&dataset_key=4fa7b334-ce0d-4e88-aaae-2e0c138d049e&has_coordinate=true&has_geospatial_issue=false&taxon_key={TAXON_KEY}&event_date={X1},{X2}&event_date={X3},{X4}&geometry={GEOMETRY}&limit=0"
-Find_occurrence = "http://api.gbif.org/v1/occurrence/search?country=US&dataset_key=4fa7b334-ce0d-4e88-aaae-2e0c138d049e&has_coordinate=true&has_geospatial_issue=false&event_date={X1},{X2}&event_date={X3},{X4}&geometry={GEOMETRY}&limit=0"
+Find_taxon_occurrence = "http://api.gbif.org/v1/occurrence/search?country=US&dataset_key=4fa7b334-ce0d-4e88-aaae-2e0c138d049e&has_coordinate=true&has_geospatial_issue=false&taxon_key={TAXON_KEY}&event_date={X1},{X2}&geometry={GEOMETRY}&limit=0"
+Find_occurrence = "http://api.gbif.org/v1/occurrence/search?country=US&dataset_key=4fa7b334-ce0d-4e88-aaae-2e0c138d049e&has_coordinate=true&has_geospatial_issue=false&event_date={X1},{X2}&geometry={GEOMETRY}&limit=0"
 
 def topn_idx(probs, n=3):
     return np.flip(np.argsort(probs)[-n:],0)
@@ -40,7 +40,7 @@ def last_year(x, day_diff=-365):
 	return x + datetime.timedelta(days=day_diff)
 
 def time_span(x, span=7):
-	# return plus minus <span> days
+	# return plus minus <span> days of last year
 	return (x + datetime.timedelta(days=-span-365)).date(), (x + datetime.timedelta(days=span-365)).date()
 
 def calc_poly(lat, lon, km=20):
@@ -118,8 +118,9 @@ def _request_taxon_occurence(taxon_key, x1, x2, poly):
 	x6 = last_year(x4)
 	# print(Find_taxon_occurrence.format(TAXON_KEY=taxon_key, X1=x1, X2=x2, X3=x3, X4=x4, X5=x5, X6=x6, GEOMETRY=poly))
 	# with urllib.request.urlopen(Find_taxon_occurrence.format(TAXON_KEY=taxon_key, X1=x1, X2=x2, X3=x3, X4=x4, X5=x5, X6=x6, GEOMETRY=poly)) as req:
-	print(Find_taxon_occurrence.format(TAXON_KEY=taxon_key, X1=x1, X2=x2, X3=x3, X4=x4, GEOMETRY=poly))
-	with urllib.request.urlopen(Find_taxon_occurrence.format(TAXON_KEY=taxon_key, X1=x1, X2=x2, X3=x3, X4=x4, GEOMETRY=poly)) as req:
+	# print(Find_taxon_occurrence.format(TAXON_KEY=taxon_key, X1=x1, X2=x2, X3=x3, X4=x4, GEOMETRY=poly))
+	print(Find_taxon_occurrence.format(TAXON_KEY=taxon_key, X1=x1, X2=x2, GEOMETRY=poly))
+	with urllib.request.urlopen(Find_taxon_occurrence.format(TAXON_KEY=taxon_key, X1=x1, X2=x2, GEOMETRY=poly)) as req:
 
 		data = req.read().decode("UTF-8")
 	return data
@@ -131,8 +132,9 @@ def _request_occurrence(x1, x2, poly):
 	x6 = last_year(x4)
 	# print(Find_occurrence.format(X1=x1, X2=x2, X3=x3, X4=x4, X5=x5, X6=x6, GEOMETRY=poly))
 	# with urllib.request.urlopen(Find_occurrence.format(X1=x1, X2=x2, X3=x3, X4=x4, X5=x5, X6=x6, GEOMETRY=poly)) as req:
-	print(Find_occurrence.format(X1=x1, X2=x2, X3=x3, X4=x4, GEOMETRY=poly))
-	with urllib.request.urlopen(Find_occurrence.format(X1=x1, X2=x2, X3=x3, X4=x4, GEOMETRY=poly)) as req:
+	# print(Find_occurrence.format(X1=x1, X2=x2, X3=x3, X4=x4, GEOMETRY=poly))
+	print(Find_occurrence.format(X1=x1, X2=x2, GEOMETRY=poly))
+	with urllib.request.urlopen(Find_occurrence.format(X1=x1, X2=x2, GEOMETRY=poly)) as req:
 		data = req.read().decode("UTF-8")
 	return data
 
