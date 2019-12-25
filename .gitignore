@@ -144,3 +144,4 @@ src/Bird_taxon.pkl
 src/Geo_sampling.py
 src/Read_ebird.py
 src/Bird_taxon.pkl
+*.DS_Store
