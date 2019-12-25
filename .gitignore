@@ -144,3 +144,14 @@ src/Bird_taxon.pkl
 src/Geo_sampling.py
 src/Read_ebird.py
 src/Bird_taxon.pkl
+src/Plot_training_progress.m
+src/Bird_feeder_description.csv
+src/Bird_feeder_description_Manual.csv
+src/Bird_feeder_occurrence190905.csv
+src/Bird_feeder_occurrence190906.csv
+src/Get_come_to_feeder_birds.py
+src/Get_feeder_birds_per_state_per_month.py
+src/Species_per_checklist_by_week_state_county.csv
+src/Species_per_checklist_by_week_state_county_dup.csv
+src/Read_ebird.py
+src/Read_ebird.py
