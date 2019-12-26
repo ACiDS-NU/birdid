@@ -497,4 +497,4 @@ birds_per_checklist = pd.read_csv('static/Species_per_checklist_by_week.csv')
 model = keras.models.load_model('static/model3_30.h5')
 
 if __name__ == "__main__":
-	application.run(debug=True)
+	application.run(debug=False)
