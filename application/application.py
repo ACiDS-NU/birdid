@@ -360,11 +360,27 @@ def zh_tw_index():
 	if request.method == 'POST':
 		messages = {}
 		# check if the post request has the file part
-		if 'file' not in request.files:
-			return redirect(request.url)
-		file = request.files['file']
-		if file.filename == '':
-			return redirect(request.url)
+		#if 'file' not in request.files:
+		#	return redirect(request.url)
+		#file = request.files['file']
+		#if file.filename == '':
+		#	return redirect(request.url)
+
+		data_url = request.form['croppedImg']   # here parse the data_url out http://xxxxx/?image={dataURL}
+		#print(data_url)
+		img_bytes = base64.b64decode(data_url.split(',')[1])
+		img = Image.open(BytesIO(img_bytes))
+	    #image_b64 = request.values['imageBase64']
+		#image_data = re.sub('^data:image/.+;base64,', '', data_url).decode('base64')
+		#image_PIL = Image.open(BytesIO(data_url))
+		#print(type(img))
+		#print(img)
+		#image_np = np.array(image_PIL)
+		#print('Image received: {}'.format(image_np.shape))
+		npimg  = np.array(img)
+
+
+
 		try:
 			obs_date = datetime.datetime.strptime(request.form['date'], '%Y-%m-%d')
 			messages["obs_date_default"] = 0
@@ -380,7 +396,7 @@ def zh_tw_index():
 			lon = float(request.form['lon'])
 			messages['location'] = request.form['location']
 			print(lat, lon)
-			poly = calc_poly(lat, lon, km=20)
+			poly = calc_poly(lat, lon, km=50)
 			print(poly)
 			Do_GeoSpatial_Filtering_latlon = 1
 			messages["lat_lon_default"] = 0
@@ -403,14 +419,19 @@ def zh_tw_index():
 
 
 		print(obs_date.date())
-		if file and allowed_file(file.filename):
-			file_ext = '.' + secure_filename(file.filename).rsplit('.', 1)[1].lower()
-			filename = str(uuid.uuid4()) + file_ext
-			filestr = file.read()
-			npimg = np.fromstring(filestr, np.uint8)
-			img_r = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-			img = cv2.cvtColor(img_r , cv2.COLOR_BGR2RGB)
+		#if file and allowed_file(file.filename):
+		if True:
+			#file_ext = '.' + secure_filename(file.filename).rsplit('.', 1)[1].lower()
+			#filename = str(uuid.uuid4()) + file_ext
+			#filestr = file.read()
+			#npimg = np.fromstring(filestr, np.uint8)
+			#img_r = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+			#img = cv2.cvtColor(img_r , cv2.COLOR_BGR2RGB)
 
+			file_ext = '.jpg'
+			filename = str(uuid.uuid4()) + file_ext
+			img = npimg #cv2.cvtColor(npimg , cv2.COLOR_BGR2RGB)
+			img_r = cv2.cvtColor(npimg , cv2.COLOR_RGB2BGR)
 			im_h = img.shape[0]
 			im_w = img.shape[1]
 			print(im_h, im_w)
@@ -432,7 +453,10 @@ def zh_tw_index():
 					w = im_w
 					h = im_h
 					messages["im_selection_default"] = 1
-
+			messages["img_x1"] = x1
+			messages["img_x2"] = x2
+			messages["img_y1"] = y1
+			messages["img_y2"] = y2
 			print(x1, x2, y1, y2, w, h)
 			actual_x1 = round(x1 / w * im_w)
 			actual_x2 = round(x2 / w * im_w)
@@ -444,8 +468,8 @@ def zh_tw_index():
 				actual_y1 = 0
 				actual_y2 = im_h
 				messages["im_selection_default"] = 1
-			img = img[actual_y1:actual_y2,actual_x1:actual_x2]
-			img_r = img_r[actual_y1:actual_y2,actual_x1:actual_x2]
+			#img = img[actual_y1:actual_y2,actual_x1:actual_x2]
+			#img_r = img_r[actual_y1:actual_y2,actual_x1:actual_x2]
 			img = paint_to_square(img)
 			data = np.expand_dims(img, axis = 0) / 255.0
 			probs = model.predict(data,verbose=1).flatten()
@@ -462,17 +486,17 @@ def zh_tw_index():
 					messages['checklists'] = getBirdsPerChecklist(lat, lon, week_this, birds_per_checklist)
 					messages['use_freq'] = 1
 					print('Using Frequency')
+					print(messages['checklists'])
 				except:
 					messages['use_freq'] = 0
 					print('Not Using Frequency')
-
 				for idx, ii in enumerate(prob_idx):
 					# Gather geo-spatial info
 					Bird_this = Birds[int(class_indices_inv_map[ii])]
 					taxon_this = Bird_taxon[Bird_this]
 					taxon_occurrence_this = json.loads(_request_taxon_occurence(taxon_this, x1, x2, poly))['count']
 					occ[ii] = taxon_occurrence_this
-					if taxon_occurrence_this / occ['total'] < 0.00001: # Temporary
+					if taxon_occurrence_this / occ['total'] < 0.0003: # Temporary
 						probs[ii] = 0
 				tn_idx = topn_idx(probs, n=5)
 				tn_idx = tn_idx[np.isin(tn_idx, prob_idx)]
@@ -492,11 +516,11 @@ def zh_tw_index():
 					occ[tn_idx[ii]] = 0
 				Bird = {'bird': b, 'prob': p, 'description': BD, 'image': BIF, 'bird_link': BL, 'photographer': PH, 'occ': occ[tn_idx[ii]]}
 				Bird_candidates.append(Bird)
-			cv2.imwrite(os.path.join(application.config['UPLOAD_FOLDER'], filename), paint_to_square(img_r, desired_size=500, pad=False))
+			cv2.imwrite(os.path.join(application.config['UPLOAD_FOLDER'], filename), paint_to_square(img_r, desired_size=224, pad=False))
 			return render_template("zh-tw/results.html", filename=filename, Bird_candidates=Bird_candidates, num_birds=len(tn_idx), occ_tot=occ['total'], messages=messages)
 	return render_template("zh-tw/index.html")
 
-@application.route('/uploads/<filename>')
+@application.route('/upload/<filename>')
 def uploaded_file(filename):
 	return send_from_directory(application.config['UPLOAD_FOLDER'],filename)
 	
