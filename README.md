@@ -62,7 +62,7 @@ Original image                     |  Cropped image
 
 
 ## Training the CNN
-The entire cropped image set is uploaded to Google Drive and training done on Google Colab with GPU. I started with a MobileNet V2 model, added a 2D pooling and finally a softmax Dense layer as output.
+The entire cropped image set is uploaded to Google Drive and training done on Google Colab with GPU, which took a few hours. I started with a MobileNet V2 model, added a 2D pooling and finally a softmax Dense layer as output.
 
 ```python
 base_model = tf.keras.applications.MobileNetV2(input_shape=IMG_SHAPE,
@@ -73,7 +73,7 @@ global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
 prediction_layer = keras.layers.Dense(404,activation='softmax')
 ```
 
-The first 10 epochs are trained with the ``base_model`` as the feature extractor. The next 20 epochs are with the final 55 layers of the base_model trainable. The training resulted in undesirable overfitting - I guess one simply needs more data to resolve this. 
+The first 10 epochs are trained with the ``base_model`` as the feature extractor. The next 20 epochs are with the final 55 layers of the base_model trainable. The training resulted in undesirable overfitting - I guess one simply needs more data to resolve this.
 
 <img src="figures/Training.png" height="400"/> 
 

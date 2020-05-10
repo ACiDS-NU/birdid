@@ -31,6 +31,15 @@
 			}
 
 		</style>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1296992-2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-1296992-2');
+        </script>
 	</head>
 	<body>
 
@@ -53,9 +62,9 @@
 			<section id="predictions" class="wrapper style2 special" style="padding: 4em 0em 3em 0em;">
 				<div class="container">
 					<div class="row 150%">
-						<div class="6u 12u$(xsmall)">
+						<div class="6u 12u$(xsmall)" id="userInput">
 								<h2>您的照片：</h2>
-								<img id="image" src="{{ url_for('uploaded_file', filename=filename) }}" style="max-width:70%; max-height: 400px;" />
+								<img id="image" src="{{ url_for('uploaded_file', filename=filename) }}" style="display:none;"/>
 
 						
 						</div>
@@ -156,6 +165,34 @@
 			<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/util.js') }}"></script>
 			<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+			<script type="text/javascript">
+				window.onload = function() {
+				  var canvas = document.createElement('canvas');
+				  var x1 = {{messages.img_x1}};
+				  var x2 = {{messages.img_x2}};
+				  var y1 = {{messages.img_y1}};
+				  var y2 = {{messages.img_y2}};
+				  if ((x2 - x1) > (y2 - y1)) {
+				  	canvas.width = 300;
+				  	canvas.height = 300 / (x2 - x1) * (y2 - y1);
+				  } else {
+				  	canvas.height = 300;
+				  	canvas.width = 300 / (y2 - y1) * (x2 - x1);
+				  }
+				  canvas.style.cssText = 'max-width=70%;';
+				  var ctx = canvas.getContext("2d");
+				  var img = document.getElementById("image");
+				  if ((x2 - x1) > (y2 - y1)) {
+				  	ctx.drawImage(img, 0, 112 - (y2 - y1) / (x2 - x1) * 112, 224, (y2 - y1) / (x2 - x1) * 224, 
+				  					0, 0, 300, (y2 - y1) / (x2 - x1) * 300);
+				  } else {
+				  	ctx.drawImage(img, 112 - (x2 - x1) / (y2 - y1) * 112, 0, (x2 - x1) / (y2 - y1) * 224, 224,
+				  					0, 0, (x2 - x1) / (y2 - y1) * 300, 300);
+				  }
+				  var userInput = document.getElementById("userInput");
+				  userInput.appendChild(canvas); 
+				};
+			</script>
 
 
 	</body>

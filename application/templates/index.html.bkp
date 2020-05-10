@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Plover - A Bird IDing web app</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/imgareaselect-default.css') }}" />
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+		<script type="text/javascript" src="{{ url_for('static', filename='scripts/jquery.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='scripts/jquery.imgareaselect.pack.js') }}"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1296992-2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-1296992-2');
+        </script>
+	</head>
+	<body class="landing">
+
+		<!-- Header -->
+			<header id="header" class="alt">
+				<h1><strong><a href="{{ url_for('index') }}">Plover</a></strong></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="{{ url_for('zh_tw_index') }}">繁體中文</a></li>
+						<li><a href="{{ url_for('index') }}">Home</a></li>
+						<li><a href="{{ url_for('about') }}">About</a></li>
+						<!-- <li><a href="{{ url_for('how_it_works') }}">How it works</a></li> -->
+					</ul>
+				</nav>
+			</header>
+
+			<a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+
+		<!-- Banner -->
+			<section id="banner">
+				<h2>Plover</h2>
+				<p>A simple bird identification web app for<br /> new and intermediate birders.</p>
+				<ul class="actions">
+					<li><a href="#GetStarted" class="button special big">Get Started</a></li>
+				</ul>
+			</section>
+
+			<!-- One -->
+				<section id="GetStarted" class="wrapper style1" style="padding: 3em 0em 0.5em 0em;">
+					<div class="container 75%">
+						<div class="row 200%">
+							<div class="6u 12u$(medium)">
+								<header class="major">
+									<h2>Get started</h2>
+									<p>Upload. Crop. Identify. <br/> It's that simple!</p>
+								</header>
+							</div>
+							<div class="6u$ 12u$(medium)">
+								<p>A convolutional neural network trained with the NAbird dataset from Cornell Lab of Ornithology, this app can now identify over 400 species that are regularly seen in the North America. Try it with your photo!</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Two -->
+            	<section id="upload" class="wrapper style1 special" style="padding: 1.5em 0em 0.5em 0em;">
+					<div class="container">
+						<header class="major" style="margin-bottom: 0.5em">
+							<h2>Upload your photo</h2>
+							<p style="color: #333;">then drag to closely crop out the bird.</p>
+						</header>
+						<p style="color: #777;">(Mobile users, let me know if the drag feature is OK or not, thanks!)</p>
+                    	<form method=post enctype=multipart/form-data>
+                    		
+							
+							<input type="file" id="file" name="file" align="center" />
+							<br/>
+							<img id="bird_image" width="60%" align="center" style="margin-top: 0.5em" />
+							<br/>
+							<input type="hidden" name="x1" value="" />
+							<input type="hidden" name="y1" value="" />
+							<input type="hidden" name="x2" value="" />
+							<input type="hidden" name="y2" value="" />
+							<input type="hidden" name="w" value="" />
+							<input type="hidden" name="h" value="" />
+							<input type="hidden" name="lat" value="" />
+							<input type="hidden" name="lon" value="" />
+							<input type="hidden" name="location" value="" />
+							<br/>
+							<h3>Optional info</h3>
+							Observation date: (Year doesn't matter)
+							<input type="date" id="date" name="date" min="2019-01-01" max="2019-12-31"> <br/><br/>
+    				      	<input type="text" name="addr" placeholder="Where did you see it?" value="" id="addr" size="10" style="width: 50%; margin: auto; display: inline;" />
+ 				      		<button type="button" id="search_addr" style="display: inline;" onclick="addr_search();">Location Search</button>
+				      		<div id="results"></div>
+				      		<div id="selected_addr"></div>
+				      		<br/>
+				      		<input class="button special big" id="Upload" type=submit value=Upload>
+                     </form>
+                         	
+
+	  
+					</div>
+				</section>
+				
+
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="icons">
+						<li><a href="https://github.com/darrenjhsu/birdid" class="icon fa-github" target="_blank"></a></li>
+						<li><a href="https://www.linkedin.com/in/darren-hsu-76bbbb8b/" class="icon fa-linkedin" target="_blank"></a></li>
+						<li><a href="https://www.flickr.com/photos/darren8221/" class="icon fa-flickr" target="_blank"></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; The Piping Plover</li>
+						<li>Design: <a href="http://templated.co" target="_blank">TEMPLATED</a></li>
+						<li>Contact: contact@plover-birdid.com</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<!-- <script src="static/js/jquery.min.js"></script> -->
+			<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+			<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+			<script type="text/javascript">
+				document.getElementById("file").onchange = function () {
+					var reader = new FileReader();
+
+					reader.onload = function (e) {
+						// get loaded data and render thumbnail.
+						document.getElementById("bird_image").src = e.target.result;
+					};
+
+					// read the image file as a data URL.
+					reader.readAsDataURL(this.files[0]);
+				};
+				$(function () {
+					$('#bird_image').imgAreaSelect({ 
+						// aspectRatio: '1:1', 
+						handles: true,
+						onSelectEnd: function (img, selection) {
+							$('input[name="x1"]').val(selection.x1);
+							$('input[name="y1"]').val(selection.y1);
+							$('input[name="x2"]').val(selection.x2);
+							$('input[name="y2"]').val(selection.y2);
+							$('input[name="w"]').val(img.width);
+							$('input[name="h"]').val(img.height);
+						}
+					});
+				});
+			</script>
+			<script type="text/javascript">
+				$(function () {
+				   	document.getElementById("bird_image").addEventListener("touchstart", touchHandler, true);
+			    	document.getElementById("bird_image").addEventListener("touchmove", touchHandler, true);
+			    	document.getElementById("bird_image").addEventListener("touchend", touchHandler, true);
+			    	document.getElementById("bird_image").addEventListener("touchcancel", touchHandler, true);
+			    	// document.getElementById("bird_image").myprefixNoScroll=1;
+				})
+				function touchHandler(event)
+				{
+					var touches = event.changedTouches,
+					first = touches[0],
+					type = "";
+					switch(event.type)
+					{
+						case "touchstart": type = "mousedown"; break;
+						case "touchmove":  type = "mousemove"; break;        
+						case "touchend":   type = "mouseup";   break;
+						default:           return;
+					}
+
+				    // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+				    //                screenX, screenY, clientX, clientY, ctrlKey, 
+				    //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+				    var simulatedEvent = document.createEvent("MouseEvent");
+				    simulatedEvent.initMouseEvent(type, true, true, window, 1, 
+				    	first.screenX, first.screenY, 
+				    	first.clientX, first.clientY, false, 
+				    	false, false, false, 0/*left*/, null);
+
+				    first.target.dispatchEvent(simulatedEvent);
+				    // if (first.target.myPrefixNoScrolling) event.preventDefault();
+				    event.preventDefault();
+				}
+
+			</script>
+			<script>
+				// Thanks to this https://derickrethans.nl/leaflet-and-nominatim.html
+				function addr_search() {
+					var inp = document.getElementById("addr");
+
+					$.getJSON('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=us&accept-language=en-US&addressdetails=0&q=' + inp.value, function(data) {
+						var items = [];
+
+						$.each(data, function(key, val) {
+							items.push(
+								"<span><a href='#' onclick='chooseAddr(" +
+								val.lat + ", " + val.lon + ", encodeURI(\"" + val.display_name.replace(/'/g, "%27") + "\"));return false;'>" + val.display_name +
+								'</a></span><br/>'
+								);
+						});
+						$('#results').empty();
+						if (items.length != 0) {
+							$('<span>', { html: "<br/>Select a location: " }).appendTo('#results');
+							$('<p>', {
+								'class': 'my-new-list',
+								html: items.join('')
+							}).appendTo('#results');
+						} else {
+							$('<p>', { html: "No results found" }).appendTo('#results');
+						}
+					});
+				}
+				function chooseAddr(lat, lng, name) {
+					$('input[name="lat"]').val(lat);
+					$('input[name="lon"]').val(lng);
+					$('input[name="location"]').val(decodeURI(name));
+					$('#selected_addr').empty();
+					$('<span>', { html: "Selected address: " + decodeURI(name) + " (" + lat + ", " + lng + ")"}).appendTo('#selected_addr');
+  				}
+			</script>
+			<script type="text/javascript">
+				$(document).keypress(
+  					function(event){
+    				if (event.which == '13') {
+						event.preventDefault();
+					}
+				});
+				var input2 = document.getElementById("Upload");
+				input2.addEventListener("click", function(event) {
+					if (event.keyCode === 13) {
+						event.preventDefault();
+					}
+				});
+			</script>	
+			<script>
+				var input = document.getElementById("addr");
+				input.addEventListener("keyup", function(event) {
+					if (event.keyCode === 13) {
+						event.preventDefault();
+						document.getElementById("search_addr").click();
+					}
+				});
+			</script>
+
+	</body>
+</html>

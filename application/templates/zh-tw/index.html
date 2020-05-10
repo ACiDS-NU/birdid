@@ -14,6 +14,15 @@
 		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/jquery.min.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/jquery.imgareaselect.pack.js') }}"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1296992-2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-1296992-2');
+        </script>
 	</head>
 	<body class="landing">
 
@@ -66,36 +75,37 @@
 							<p style="color: #333;">接著在照片上拖曳，將想辨認的鳥盡量緊密地框起來</p>
 						</header>
 						<p style="color: #777;">手機用戶如果覺得很難用，請讓我們知道！ XD</p>
-                    	<form method=post enctype=multipart/form-data>
-                    		
-							
-							<input type="file" id="file" name="file" align="center"/>
+                    	
+						<input type="file" id="file" name="file" align="center" />
+                    	<form method=post enctype=multipart/form-data id="bird_info">
+                    			
 							<br/>
 							<img id="bird_image" width="60%" align="center" style="margin-top: 0.5em" />
 							<br/>
-							<input type="hidden" name="x1" value="" />
-							<input type="hidden" name="y1" value="" />
-							<input type="hidden" name="x2" value="" />
-							<input type="hidden" name="y2" value="" />
-							<input type="hidden" name="w" value="" />
-							<input type="hidden" name="h" value="" />
-							<input type="hidden" name="lat" value="" />
-							<input type="hidden" name="lon" value="" />
-							<input type="hidden" name="location" value="" />
-							<br/><br/>
+							<input type="hidden" id="x1" name="x1" value="" />
+							<input type="hidden" id="y1" name="y1" value="" />
+							<input type="hidden" id="x2" name="x2" value="" />
+							<input type="hidden" id="y2" name="y2" value="" />
+							<input type="hidden" id="w" name="w" value="" />
+							<input type="hidden" id="h" name="h" value="" />
+							<input type="hidden" id="lat" name="lat" value="" />
+							<input type="hidden" id="lon" name="lon" value="" />
+							<input type="hidden" id="loc" name="location" value="" />
+							<br/>
 							<h4>下列資訊可留白，但輸入這些資訊可以幫助我們更精確地進行辨識。</h4>
 							拍攝日期（年份不重要，我們只用日期來查詢鳥類出現的機率）：
 							<input type="date" id="date" name="date" min="2019-01-01" max="2019-12-31"> <br/><br/>
     				      	<input type="text" name="addr" placeholder="您在哪裡拍攝這張照片的？（請用英文）" value="" id="addr" size="10" style="width: 50%; margin: auto; display: inline;" />
  				      		<button type="button" id="search_addr" style="display: inline; font-family: inherit;" onclick="addr_search();">查詢地址</button>
-				      		<div id="results"></div>
+ 				      		<div id="results"></div>
 				      		<div id="selected_addr"></div>
-				      		<br/>
-				      		<input class="button special big" id="Upload" type=submit value="上傳照片">
-                     </form>
-                         	
+							<br/>
+							<input class="button special big" id="Upload" value="上傳照片" onclick="crop_resize()">
+				      		<!--<input class="button special big" id="Upload" type=submit value=Upload onsubmit="crop_resize()">-->
+				      		<input type="hidden" id="croppedImg" name="croppedImg" value=""/>
 
-	  
+                     </form>
+
 					</div>
 				</section>
 				
@@ -127,7 +137,19 @@
 
 					reader.onload = function (e) {
 						// get loaded data and render thumbnail.
-						document.getElementById("bird_image").src = e.target.result;
+						var myImg = document.getElementById("bird_image");
+						myImg.src = e.target.result;
+						myImg.onload = function() {
+						//document.getElementById("bird_image").src = e.target.result;
+							var myImg = document.getElementById("bird_image");
+							console.log(myImg.width, myImg.height);
+							$('input[name="x1"]').val(0);
+							$('input[name="y1"]').val(0);
+							$('input[name="x2"]').val(myImg.width);
+							$('input[name="y2"]').val(myImg.height);
+							$('input[name="w"]').val(myImg.width);
+							$('input[name="h"]').val(myImg.height);
+						};
 					};
 
 					// read the image file as a data URL.
@@ -185,6 +207,54 @@
 				}
 
 			</script>
+
+			<script>
+				function crop_resize() {
+					console.log("Hello World!!");
+					var myImg = document.getElementById("bird_image");
+			        var realWidth = myImg.naturalWidth;
+        			var realHeight = myImg.naturalHeight;
+        			var selection_x1 = document.getElementById("x1").value;
+        			var selection_y1 = document.getElementById("y1").value;
+        			var selection_x2 = document.getElementById("x2").value;
+        			var selection_y2 = document.getElementById("y2").value;
+        			var img_w = document.getElementById("w").value;
+        			var img_h = document.getElementById("h").value;
+        			console.log("Original width=" + realWidth + ", " + "Original height=" + realHeight);
+        			console.log(selection_x1,selection_y1,selection_x2,selection_y2,img_w,img_h);
+        			var scaling = realWidth / img_w;
+        			console.log(scaling)
+        			var canvas = document.createElement('canvas');
+			        canvas.width = 224;
+        			canvas.height = 224;
+        			canvas.style.cssText = 'display:none;';
+        			var ctx = canvas.getContext("2d");
+
+        			if ((selection_x2 - selection_x1) > (selection_y2 - selection_y1)) {
+        				//if ((selection_x2 - selection_x1) * scaling > 224) {
+        					ctx.drawImage(myImg, selection_x1 * scaling, selection_y1 * scaling,
+        						(selection_x2 - selection_x1) * scaling, (selection_y2 - selection_y1) * scaling,
+        						0, 112 - (selection_y2 - selection_y1) / (selection_x2 - selection_x1) * 224 / 2,
+        						224, (selection_y2 - selection_y1) / (selection_x2 - selection_x1) * 224);
+        				//}
+        			} else {
+        				//if ((selection_y2 - selection_y1) * scaling > 224) {
+							ctx.drawImage(myImg, selection_x1 * scaling, selection_y1 * scaling,
+        						(selection_x2 - selection_x1) * scaling,(selection_y2 - selection_y1) * scaling,
+        						112 - (selection_x2 - selection_x1) / (selection_y2 - selection_y1) * 224 / 2 , 0,
+        						(selection_x2 - selection_x1) / (selection_y2 - selection_y1) * 224, 224);
+        				//}
+        			}
+        			document.body.appendChild(canvas); 
+        			var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+        			document.getElementById("croppedImg").value = dataURL;
+        			console.log(dataURL);
+        			document.getElementById("bird_info").submit();
+			        
+				}
+
+			</script>
+
 			<script>
 				// Thanks to this https://derickrethans.nl/leaflet-and-nominatim.html
 				function addr_search() {
