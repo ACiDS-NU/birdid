@@ -80,7 +80,7 @@
 								Visual probability: {{Bird.prob}} % 
 									{% if messages.GeoSpatial_Filtering == 1 %}
 										{% if messages.use_freq == 1 %}
-										| Geotemporal frequency: {{ "%.1f"|format(Bird.occ / occ_tot * messages.checklists * 100)}} %
+										| Observed in {{ "%.1f"|format(Bird.occ / occ_tot * messages.checklists * 100)}} % of checklists
 										{% else %}
 										| Geotemporal occurance: {{Bird.occ}} / {{occ_tot}}
 										{% endif %}
